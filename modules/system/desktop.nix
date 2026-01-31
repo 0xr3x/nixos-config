@@ -6,6 +6,11 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  # Exclude unwanted KDE apps
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [
+    konsole  # Using Kitty instead
+  ];
+
   # Touchpad gestures and settings
   services.libinput = {
     enable = true;
