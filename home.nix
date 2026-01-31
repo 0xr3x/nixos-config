@@ -104,9 +104,19 @@
     uv
     foundry
     claude-code
+    gh          # GitHub CLI
+    lazygit     # TUI for git
+    docker-compose
 
     # Office
     wpsoffice
+
+    # Media
+    mpv         # Best video player
+    flameshot   # Better screenshots
+
+    # Torrents
+    transmission_4-gtk
 
     # Battery monitoring tools
     brightnessctl
@@ -115,6 +125,9 @@
 
     # System monitoring
     btop
+    dust        # Better du
+    duf         # Better df
+    procs       # Better ps
 
     # CLI utilities
     ripgrep
@@ -125,6 +138,8 @@
     yq-go   # YAML processor
     httpie  # better curl for APIs
     nh      # nix-helper: better nixos-rebuild
+    nvd     # nix version diff
+    ncdu    # Interactive disk usage
 
     ]) ++ [
         inputs.zen-browser.packages.${pkgs.system}.default
@@ -148,11 +163,35 @@
       commit = {
         gpgsign = true;
       };
+
+      init = {
+        defaultBranch = "main";
+      };
+
+      pull = {
+        rebase = true;
+      };
+
+      push = {
+        autoSetupRemote = true;
+      };
+
+      diff = {
+        algorithm = "histogram";
+      };
     };
 
     signing = {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKuxYP9adFjxLE3vCvSpuxtL/1uEz/f14/CL0ymqMxCW";
       signByDefault = true;
+    };
+
+    aliases = {
+      co = "checkout";
+      br = "branch";
+      st = "status -sb";
+      cm = "commit -m";
+      lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit";
     };
   };
 }
