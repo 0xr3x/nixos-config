@@ -1,0 +1,14 @@
+# Hardware-specific (don't share)
+hardware-configuration.nix
+
+# Build artifacts
+result
+result-*
+
+# Backup files
+*.backup
+*.bak
+*~
+
+# Nix build outputs
+.direnv/
