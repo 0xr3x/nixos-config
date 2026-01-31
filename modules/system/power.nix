@@ -53,10 +53,12 @@
   services.logind = {
     lidSwitch = "suspend";
     lidSwitchExternalPower = "lock";
-    extraConfig = ''
-      HandlePowerKey=suspend
-      IdleAction=suspend
-      IdleActionSec=30min
-    '';
+    settings = {
+      Login = {
+        HandlePowerKey = "suspend";
+        IdleAction = "suspend";
+        IdleActionSec = "30min";
+      };
+    };
   };
 }
