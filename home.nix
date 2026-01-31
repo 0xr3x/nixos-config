@@ -20,9 +20,9 @@
       grep = "rg";
       find = "fd";
       top = "btop";
-      rebuild = "sudo nixos-rebuild switch";
-      update = "sudo nixos-rebuild switch --upgrade";
-      cleanup = "sudo nix-collect-garbage -d";
+      rebuild = "nh os switch";
+      update = "nh os switch --update";
+      cleanup = "nh clean all --keep 5";
       bat-check = "acpi -b";
       bright = "brightnessctl";
       cd = "z";  # use zoxide
@@ -120,6 +120,7 @@
     jq      # JSON processor
     yq-go   # YAML processor
     httpie  # better curl for APIs
+    nh      # nix-helper: better nixos-rebuild
 
     ]) ++ [
         inputs.zen-browser.packages.${pkgs.system}.default

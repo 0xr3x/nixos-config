@@ -48,4 +48,15 @@
 
   # PowerTOP auto-tuning
   powerManagement.powertop.enable = true;
+
+  # Laptop lid actions
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchExternalPower = "lock";
+    extraConfig = ''
+      HandlePowerKey=suspend
+      IdleAction=suspend
+      IdleActionSec=30min
+    '';
+  };
 }

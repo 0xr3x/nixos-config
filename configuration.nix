@@ -56,6 +56,31 @@
     allowReboot = false;
   };
 
+  # Auto-update all flake inputs weekly
+  systemd.services.flake-update = {
+    description = "Update flake inputs";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+    path = [ pkgs.git pkgs.nix ];
+    script = ''
+      cd /etc/nixos
+      nix flake update
+      git add flake.lock
+      git diff --cached --quiet || git commit -m "chore: auto-update flake inputs"
+    '';
+  };
+
+  systemd.timers.flake-update = {
+    description = "Update flake inputs weekly";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
   # Automatic garbage collection
   nix.gc = {
     automatic = true;

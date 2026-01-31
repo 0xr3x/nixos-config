@@ -9,6 +9,19 @@
     allowedUDPPorts = [ ];
   };
 
+  # USBGuard - protect against malicious USB devices
+  services.usbguard = {
+    enable = true;
+    dbus.enable = true;
+    implicitPolicyTarget = "block";
+    rules = ''
+      # Allow currently connected devices on first run
+      allow id 1d6b:0002 # Linux Foundation 2.0 root hub
+      allow id 1d6b:0003 # Linux Foundation 3.0 root hub
+      # Add your trusted devices here after running: usbguard list-devices
+    '';
+  };
+
   # 1Password
   programs._1password.enable = true;
   programs._1password-gui = {

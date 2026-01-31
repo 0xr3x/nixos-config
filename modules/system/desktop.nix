@@ -6,6 +6,16 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  # Touchpad gestures and settings
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      tapping = true;
+      naturalScrolling = true;
+      clickMethod = "clickfinger";
+    };
+  };
+
   # Configure keymap
   services.xserver.xkb = {
     layout = "gb";
