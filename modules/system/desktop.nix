@@ -39,6 +39,7 @@
     MOZ_ENABLE_WAYLAND = "1";      # Firefox Wayland
     QT_QPA_PLATFORM = "wayland";
     SDL_VIDEODRIVER = "wayland";
+    TERMINAL = "kitty";  # Set default terminal
   };
 
   # flatpak

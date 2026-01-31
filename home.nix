@@ -1,6 +1,10 @@
 { config, pkgs, inputs, ... }:
 
 {
+  imports = [
+    ./modules/home/terminal.nix
+  ];
+
   programs.home-manager.enable = true;
 
   home.username = "rex";
