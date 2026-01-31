@@ -29,7 +29,14 @@
   services.fprintd.enable = true;
   security.pam.services = {
     login.fprintAuth = true;
-    sudo.fprintAuth = true;
+    # Make sudo fingerprint sufficient (optional), not required
+    sudo.text = ''
+      auth sufficient pam_fprintd.so
+      auth include system-auth
+      account include system-auth
+      password include system-auth
+      session include system-auth
+    '';
   };
 
   # Bluetooth
