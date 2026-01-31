@@ -7,7 +7,7 @@
 {
   imports =
     [ # Include the results of the hardware scan.
-      /etc/nixos/hardware-configuration.nix
+      ./hardware-configuration.nix
       ./modules/system/desktop.nix
       ./modules/system/hardware.nix
       ./modules/system/security.nix
