@@ -11,6 +11,11 @@
     konsole  # Using Kitty instead
   ];
 
+  # Exclude X11 default apps
+  services.xserver.excludePackages = with pkgs; [
+    xterm
+  ];
+
   # Touchpad gestures and settings
   services.libinput = {
     enable = true;
