@@ -6,8 +6,15 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-  # Networking settings required for surfshark-vpn
-  services.resolved.enable = true;
+  # Faster boot - don't wait for network
+  systemd.services.NetworkManager-wait-online.enable = false;
+
+  # DNS settings for surfshark-vpn
+  services.resolved = {
+    enable = true;
+    dnssec = "allow-downgrade";
+    fallbackDns = [ "1.1.1.1" "8.8.8.8" ];
+  };
   networking.resolvconf.enable = false;
   networking.networkmanager.dns = "systemd-resolved";
 

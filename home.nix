@@ -25,7 +25,50 @@
       cleanup = "sudo nix-collect-garbage -d";
       bat-check = "acpi -b";
       bright = "brightnessctl";
+      cd = "z";  # use zoxide
     };
+  };
+
+  # Better shell prompt
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+    settings = {
+      add_newline = false;
+      character = {
+        success_symbol = "[➜](bold green)";
+        error_symbol = "[➜](bold red)";
+      };
+      directory = {
+        truncation_length = 3;
+        truncate_to_repo = true;
+      };
+    };
+  };
+
+  programs.fzf = {
+    enable = true;
+    enableBashIntegration = true;
+    defaultCommand = "fd --type f";  # use fd instead of find
+  };
+
+  # Auto-load project environments
+  programs.direnv = {
+    enable = true;
+    enableBashIntegration = true;
+    nix-direnv.enable = true;
+  };
+
+  # Smart directory jumping
+  programs.zoxide = {
+    enable = true;
+    enableBashIntegration = true;
+  };
+
+  # Better manpages
+  programs.man = {
+    enable = true;
+    generateCaches = true;
   };
 
   # autostart 1password
@@ -74,6 +117,9 @@
     fd
     eza
     bat
+    jq      # JSON processor
+    yq-go   # YAML processor
+    httpie  # better curl for APIs
 
     ]) ++ [
         inputs.zen-browser.packages.${pkgs.system}.default

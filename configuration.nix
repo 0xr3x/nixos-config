@@ -25,6 +25,23 @@
     trusted-users = [ "root" "@wheel" ];
     max-jobs = "auto";
     cores = 0;
+
+    # Binary cache substituters
+    substituters = [
+      "https://cache.nixos.org"
+      "https://nix-community.cachix.org"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
+
+    # Better error messages and debugging
+    log-lines = 25;
+    show-trace = true;
+    keep-failed = true;
+    keep-derivations = true;
+    fallback = true;
   };
 
   # Automatic system updates

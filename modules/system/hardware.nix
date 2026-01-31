@@ -50,4 +50,8 @@
   # Firmware updates
   services.fwupd.enable = true;
 
+  # Faster key repeat for developers
+  services.xserver.autoRepeatDelay = 200;
+  services.xserver.autoRepeatInterval = 30;
+
 }
