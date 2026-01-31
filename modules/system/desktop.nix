@@ -17,21 +17,7 @@
     # bluetooth support
     kdePackages.bluez-qt
     kdePackages.plasma-pa
-
-    # KDE / PIM bits needed for Merkuro + accounts
-    kdePackages.merkuro
-    kdePackages.kdepim-runtime
-    kdePackages.akonadi
-    kdePackages.kaccounts-integration
-    kdePackages.kaccounts-providers
-
-    # signon bits
-    kdePackages.signond
-    kdePackages.signon-kwallet-extension
   ];
-
-  # Enable AccountsService (needed for online accounts / calendar integration)
-  services.accounts-daemon.enable = true;
 
   # Bluetooth GUI manager
   services.blueman.enable = true;
