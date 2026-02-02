@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  # Environment variables
+  home.sessionVariables = {
+    NH_FLAKE = "/etc/nixos";
+  };
+
   # Bash configuration
   programs.bash = {
     enable = true;
