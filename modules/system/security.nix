@@ -19,6 +19,11 @@
       allow id 1d6b:0002 # Linux Foundation 2.0 root hub
       allow id 1d6b:0003 # Linux Foundation 3.0 root hub
       
+      # Built-in hardware
+      allow id 30c9:0050 # Integrated RGB Camera
+      allow id 27c6:6594 # Goodix fingerprint reader
+      allow id 058f:9540 # EMV Smartcard Reader
+      
       # Bluetooth controller
       allow id 8087:0033 # Intel Bluetooth device
       
