@@ -18,7 +18,12 @@
       # Allow currently connected devices on first run
       allow id 1d6b:0002 # Linux Foundation 2.0 root hub
       allow id 1d6b:0003 # Linux Foundation 3.0 root hub
-      # Add your trusted devices here after running: usbguard list-devices
+      
+      # Bluetooth controller
+      allow id 8087:0033 # Intel Bluetooth device
+      
+      # Wireless mouse dongle
+      allow id 32c2:0018 # 2.4G Wireless Receiver
     '';
   };
 
