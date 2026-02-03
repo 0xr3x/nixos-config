@@ -35,12 +35,10 @@
   # KDE packages
   environment.systemPackages = with pkgs; [
     # bluetooth support
+    kdePackages.bluedevil
     kdePackages.bluez-qt
     kdePackages.plasma-pa
   ];
-
-  # Bluetooth GUI manager
-  services.blueman.enable = true;
 
   # Wayland environment variables
   environment.sessionVariables = {
