@@ -48,7 +48,6 @@
     pnpm
     uv
     foundry
-    claude-code
     gh          # GitHub CLI
     lazygit     # TUI for git
     docker-compose
