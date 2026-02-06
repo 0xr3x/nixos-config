@@ -6,7 +6,7 @@ let
   sources = {
     x86_64-linux = {
       url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/linux-x64/claude";
-      hash = "sha256-NmXxL2ehFZsxAF3M4RyhHYHUl1muPQHthTkQ/n5Enx8=";
+      hash = "sha256-NmXxL2ehFZsxAF3M4Ryh3kHUl1m649Ae2FOUD+fEoh8=";
     };
     aarch64-linux = {
       url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/linux-arm64/claude";
