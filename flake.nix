@@ -10,9 +10,11 @@
     };
 
     zen-browser.url = "github:0xr3x/zen-browser-flake";
+    
+    claude-code.url = "github:0xr3x/claude-code-nix";
   };
 
-  outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs: {
+  outputs = { self, nixpkgs, home-manager, zen-browser, claude-code, ... }@inputs: {
     nixosConfigurations.rex-nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit inputs; };
@@ -32,7 +34,9 @@
         # Global config
         {
           nixpkgs.config.allowUnfree = true;
-          nixpkgs.overlays = [ (import ./overlays) ];
+          nixpkgs.overlays = [ 
+            claude-code.overlays.default
+          ];
         }
       ];
     };
