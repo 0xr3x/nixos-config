@@ -1,8 +1,4 @@
-{ lib
-, stdenv
-, fetchurl
-, autoPatchelfHook
-}:
+{ lib, stdenv, fetchurl, autoPatchelfHook }:
 
 let
   version = "2.1.34";
@@ -10,45 +6,36 @@ let
   sources = {
     x86_64-linux = {
       url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/linux-x64/claude";
-      sha256 = "3665f12f67a1159b31005dcce11ca1de41d49759bae3d01ed853940fe7c4a21f";
+      hash = "sha256-NmXxL2ehFZsxAF3M4RyhHYHUl1muPQHthTkQ/n5Enx8=";
     };
     aarch64-linux = {
       url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/${version}/linux-arm64/claude";
-      sha256 = "ffb0625ad609b5816cedfb23f88325f62b63747ab6fdfe5a53f352fd4ed77b33";
+      hash = "sha256-/7BiWtYJtYFs7fsjj4gl9itkN0erfP5aU/NS/U7Xezs=";
     };
   };
   
-  source = sources.${stdenv.hostPlatform.system} or (throw "Unsupported system: ${stdenv.hostPlatform.system}");
+  source = sources.${stdenv.hostPlatform.system} or (throw "Unsupported system");
   
 in stdenv.mkDerivation {
   pname = "claude-code";
   inherit version;
   
   src = fetchurl {
-    inherit (source) url sha256;
+    inherit (source) url hash;
   };
   
   dontUnpack = true;
-  dontBuild = true;
   
-  nativeBuildInputs = lib.optionals stdenv.isLinux [
-    autoPatchelfHook
-  ];
+  nativeBuildInputs = [ autoPatchelfHook ];
   
   installPhase = ''
-    runHook preInstall
-    
     install -Dm755 $src $out/bin/claude
-    
-    runHook postInstall
   '';
   
   meta = with lib; {
-    description = "Claude Code - AI coding assistant by Anthropic";
+    description = "Claude Code - AI coding assistant";
     homepage = "https://claude.ai";
     license = licenses.unfree;
     platforms = [ "x86_64-linux" "aarch64-linux" ];
-    maintainers = [ ];
-    mainProgram = "claude";
   };
 }
