@@ -34,6 +34,11 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
+# Ensure Cursor directories exist
+mkdir -p "$HOME/.cursor"
+mkdir -p "$HOME/.config/Cursor"
+mkdir -p "$HOME/.cache/Cursor"
+
 # Launch cursor with bubblewrap (NixOS-compatible)
 exec bwrap \
     --ro-bind /nix /nix \
