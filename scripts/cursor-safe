@@ -34,21 +34,18 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-# Launch cursor with bubblewrap (better than firejail for this use case)
+# Launch cursor with bubblewrap (NixOS-compatible)
 exec bwrap \
     --ro-bind /nix /nix \
-    --ro-bind /usr /usr \
-    --ro-bind /bin /bin \
-    --ro-bind /lib /lib \
-    --ro-bind /lib64 /lib64 \
-    --ro-bind /etc /etc \
     --dev /dev \
     --proc /proc \
     --tmpfs /tmp \
     --tmpfs /run \
     --ro-bind /sys /sys \
+    --ro-bind-try /run/current-system /run/current-system \
     --ro-bind "$XDG_RUNTIME_DIR/wayland-0" "$XDG_RUNTIME_DIR/wayland-0" \
-    --ro-bind "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
+    --ro-bind-try "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
+    --ro-bind-try "$XDG_RUNTIME_DIR/pipewire-0" "$XDG_RUNTIME_DIR/pipewire-0" \
     --bind "$TARGET_DIR" "$TARGET_DIR" \
     --bind "$HOME/.cursor" "$HOME/.cursor" \
     --bind "$HOME/.config/Cursor" "$HOME/.config/Cursor" \
