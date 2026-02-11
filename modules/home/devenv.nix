@@ -23,6 +23,7 @@ in
     docker-compose
     nodejs_22  # for npm/dotenvx
     gnumake
+    dotenvx    # Better dotenv - handles encryption
     devenvScript
   ];
   
@@ -137,12 +138,6 @@ OPENROUTER_API_KEY=
 ANTHROPIC_API_KEY=
 EOF
         echo "✅ Created .env file"
-      fi
-      
-      # Install dotenvx if not available
-      if ! command -v dotenvx >/dev/null 2>&1; then
-        echo "Installing dotenvx..."
-        npm install -g @dotenvx/dotenvx
       fi
       
       # Encrypt .env if not already encrypted
