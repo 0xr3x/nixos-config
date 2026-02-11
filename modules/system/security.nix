@@ -112,22 +112,19 @@
     include disable-programs.inc
     
     # Allow network (needed for AI features)
-    # Don't use net none - Cursor needs internet
     
-    # Only allow the directory being opened + config
-    # This is set at runtime via --whitelist=$PROJECT_DIR
-    noblacklist ''${HOME}
-    blacklist ''${HOME}
+    # Start with everything blocked
+    # The --whitelist=$PROJECT_DIR from cursor-safe will add the project
     
     # Allow cursor config and cache
-    whitelist ''${HOME}/.cursor
-    whitelist ''${HOME}/.config/Cursor
-    whitelist ''${HOME}/.cache/Cursor
+    noblacklist ''${HOME}/.cursor
+    noblacklist ''${HOME}/.config/Cursor
+    noblacklist ''${HOME}/.cache/Cursor
     
     # Wayland support (KDE Plasma)
     noblacklist ''${RUNUSER}
     
-    # Deny sensitive locations explicitly
+    # Block sensitive locations (defense in depth)
     blacklist ''${HOME}/.ssh
     blacklist ''${HOME}/.gnupg
     blacklist ''${HOME}/.password-store
