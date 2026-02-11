@@ -36,7 +36,8 @@ scripts/
 ├── turtlelist          # List turtle containers
 ├── turtlecode          # Open VS Code Remote in container
 ├── turtlenuke          # Destroy container + volume
-└── turtleshell         # Quick shell access
+├── turtleshell         # Quick shell access
+└── cursor-safe         # Launch Cursor sandboxed to directory
 ```
 
 ## Quick Start
@@ -59,9 +60,10 @@ sudo nixos-rebuild switch --flake /etc/nixos#rex-nixos
 See [WORKFLOWS.md](WORKFLOWS.md) for detailed guide.
 
 **Quick summary:**
-- Trusted projects: Use Cursor + Claude Code directly
+- All development: Use `cursor` (sandboxed to project only)
 - Untrusted repos: Use `turtleclone` → isolated containers
 - VS Code: Remote-only (connects to containers/SSH)
+- Emergency: `cursor-unsafe` for full filesystem access
 
 ## Key Commands
 
@@ -90,10 +92,11 @@ claude chat "explain this"   # Current dir only
 
 ✅ LUKS full disk encryption  
 ✅ USBGuard (USB device whitelist)  
-✅ Firejail sandboxing (WPS Office, VS Code)  
+✅ Firejail sandboxing (WPS, VS Code, Cursor)  
 ✅ Container-first untrusted code  
 ✅ Firewall (deny all by default)  
 ✅ 1Password integration  
+✅ AI tools sandboxed (no ../ access)  
 
 ## Automation
 
@@ -105,6 +108,7 @@ claude chat "explain this"   # Current dir only
 
 - WPS Office: Sandboxed, no network access
 - VS Code: Cannot access local files (remote-only)
+- Cursor: Sandboxed to project directory (use cursor-unsafe for full access)
 - Claude Code: Ephemeral containers
 - Battery: 50% CPU limit on battery power
 

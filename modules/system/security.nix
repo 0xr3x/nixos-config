@@ -105,6 +105,44 @@
     read-only ''${HOME}/.ssh/config
   '';
 
+  # Firejail profile for Cursor (restricted to project directory only)
+  environment.etc."firejail/cursor.profile".text = ''
+    # Network access (needed for AI features)
+    
+    # Only allow the directory being opened + config
+    # This is set at runtime via --whitelist=$PROJECT_DIR
+    noblacklist ''${HOME}
+    blacklist ''${HOME}
+    
+    # Allow cursor config
+    whitelist ''${HOME}/.cursor
+    whitelist ''${HOME}/.config/Cursor
+    whitelist /tmp
+    
+    # Deny sensitive locations explicitly
+    blacklist ''${HOME}/.ssh
+    blacklist ''${HOME}/.gnupg
+    blacklist ''${HOME}/.password-store
+    blacklist ''${HOME}/.aws
+    blacklist ''${HOME}/.kube
+    blacklist ''${HOME}/.docker
+    blacklist ''${HOME}/.1password
+    
+    # System restrictions
+    seccomp
+    caps.drop all
+    nonewprivs
+    noroot
+    
+    # Disable dangerous features
+    nodvd
+    nogroups
+    noinput
+    notv
+    nou2f
+    novideo
+  '';
+
   programs.firejail.wrappedBinaries = {
     wps = {
       executable = "''${pkgs.wpsoffice}/bin/wps";

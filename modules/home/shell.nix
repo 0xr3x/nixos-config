@@ -22,6 +22,12 @@
       bat-check = "acpi -b";
       bright = "brightnessctl";
       cd = "z";  # use zoxide
+      
+      # Sandboxed Cursor (recommended)
+      cursor = "cursor-safe";
+      
+      # Unsandboxed Cursor (use with caution)
+      cursor-unsafe = "code-cursor-fhs";
     };
     
     # Claude Code function (not alias) for better flexibility

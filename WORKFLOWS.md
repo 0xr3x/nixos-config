@@ -6,25 +6,29 @@ Security-first development setup with containerized untrusted code.
 
 | Tool | Access | Use Case |
 |------|--------|----------|
-| **Cursor** | Full filesystem | Trusted local projects |
-| **VS Code** | Remote-only | Connect to containers/SSH |
-| **Claude Code** | Current dir only | AI assistance (containerized) |
-| **turtleclone** | Isolated | Untrusted repos |
+| **cursor** (sandboxed) | Project dir only | All development (default) |
+| **cursor-unsafe** | Full filesystem | Emergency only |
+| **code** (VS Code) | Remote-only | Connect to containers/SSH |
+| **claude** | Current dir only | AI assistance (containerized) |
+| **turtleclone** | Isolated | Clone untrusted repos |
 
 ---
 
 ## Working on Trusted Projects
 
 ```bash
-# Open in Cursor
+# Open in Cursor (sandboxed to project directory)
 cursor ~/Documents/my-project
+
+# Cursor can now ONLY access:
+# ✅ ~/Documents/my-project and subdirectories
+# ❌ Parent directories, ~/.ssh, other projects
 
 # Use Claude Code for AI
 cd ~/Documents/my-project
 claude chat "explain this function"
-claude /status
 
-# Note: Claude only sees current directory
+# Both Cursor and Claude are now sandboxed to project only!
 ```
 
 ---
@@ -133,29 +137,39 @@ podman volume prune
 
 ## Recommended Workflows
 
-**Trusted work:**  
-`~/Documents/project` → Cursor + Claude Code
+**For ALL development:**
+```
+cursor ~/Documents/project     # Sandboxed to project only
+claude chat "help"             # Sandboxed to current dir
+```
 
-**Untrusted review:**  
-`turtleclone` → VS Code Remote → Review isolated
+**For untrusted code review:**
+```
+turtleclone → turtlecode       # Double isolated
+```
 
-**Quick experiments:**  
-`/tmp/test` → Cursor or Claude → Disposable
+**Emergency full access (avoid):**
+```
+cursor-unsafe ~/Documents/     # No sandbox - use with caution
+```
 
 ---
 
 ## Security Model
 
-✅ **Cursor**: Full access - trusted projects only  
-✅ **VS Code**: Remote-only - can't leak local files  
-✅ **Claude Code**: Containerized - no access to secrets  
-✅ **turtleclone**: Isolated - malicious code trapped
+✅ **Cursor**: Sandboxed to project directory  
+✅ **VS Code**: Remote-only - can't access local files  
+✅ **Claude Code**: Containerized - only current dir  
+✅ **turtleclone**: Isolated - trapped in container
 
 **Protected from:**
-- Prompt injection attacks
-- Malicious repos stealing credentials  
-- AI accessing sensitive files
-- Supply chain attacks
+- ✅ AI accessing parent directories (../)
+- ✅ Prompt injection stealing credentials  
+- ✅ Malicious repos accessing other projects
+- ✅ Supply chain attacks
+- ✅ Code browsing your entire filesystem
+
+**Now safe for BOTH trusted and untrusted projects!**
 
 ---
 
