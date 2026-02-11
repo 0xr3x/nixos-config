@@ -143,9 +143,33 @@ dotenvx encrypt
   - Used by dev-env hooks for LLM features
   - Optional for basic development
 
-- **Anthropic API Key**: https://console.anthropic.com/
-  - Used by Claude Code CLI inside containers
-  - Optional - only needed if using Claude CLI
+### Claude Code OAuth Token
+
+You can either:
+
+**Option 1: Let it authenticate inside each container** (OAuth per project)
+```bash
+devenv shell
+claude  # First run: opens browser for OAuth
+```
+
+**Option 2: Use a shared OAuth token** (stored in .env)
+```bash
+# 1. Generate token once
+devenv shell
+claude  # Complete OAuth flow
+
+# 2. Extract token from container
+# (Token is in claude-config volume)
+
+# 3. Add to .env
+devenv-add-key
+# Enter Claude Code OAuth token when prompted
+
+# Now all projects will use this token
+```
+
+The `claude-config` volume stores per-project authentication.
 
 ### Security Notes
 

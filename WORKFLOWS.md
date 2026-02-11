@@ -76,24 +76,30 @@ setup-devenv
 
 ### Add API Keys (Optional)
 
-For enhanced features like LLM hooks and Claude CLI:
+For enhanced dev-env features:
 
 ```bash
 devenv-add-key
-
-# Or manually:
-cd ~/dev-env
-nano .env              # Add your keys
-dotenvx encrypt        # Re-encrypt
 ```
 
 **Where to get keys:**
-- OpenRouter: https://openrouter.ai/keys
-- Anthropic: https://console.anthropic.com/
+- **OpenRouter**: https://openrouter.ai/keys (for dev-env LLM hooks)
+- **Claude Code OAuth Token**: Generate inside container (see below)
 
-**Note:** Keys are optional for basic development. Only needed for:
-- dev-env hooks (OpenRouter)
-- Claude Code CLI inside containers (Anthropic)
+**To get Claude Code OAuth token:**
+```bash
+# 1. Start a dev environment
+devenv shell
+
+# 2. Inside container, run claude
+claude
+
+# 3. Complete OAuth in browser
+# 4. Token is saved to ~/.claude/config.json in the volume
+# 5. You can extract it and add via devenv-add-key for persistence
+```
+
+Auth persists in `claude-config` volume across rebuilds.
 
 ---
 

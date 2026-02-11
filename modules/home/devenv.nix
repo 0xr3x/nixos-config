@@ -56,34 +56,35 @@ in
       echo ""
       echo "Current keys (encrypted):"
       if [ -f .env.keys ]; then
-        dotenvx get OPENROUTER_API_KEY >/dev/null 2>&1 && echo "✅ OPENROUTER_API_KEY: Set" || echo "❌ OPENROUTER_API_KEY: Empty"
-        dotenvx get ANTHROPIC_API_KEY >/dev/null 2>&1 && echo "✅ ANTHROPIC_API_KEY: Set" || echo "❌ ANTHROPIC_API_KEY: Empty"
+        ~/.local/node_modules/.bin/dotenvx get OPENROUTER_API_KEY >/dev/null 2>&1 && echo "✅ OPENROUTER_API_KEY: Set" || echo "❌ OPENROUTER_API_KEY: Empty"
+        ~/.local/node_modules/.bin/dotenvx get CLAUDE_CODE_OAUTH_TOKEN >/dev/null 2>&1 && echo "✅ CLAUDE_CODE_OAUTH_TOKEN: Set" || echo "❌ CLAUDE_CODE_OAUTH_TOKEN: Empty"
       else
         echo "⚠️  No encrypted keys yet"
       fi
       echo ""
+      echo "To generate Claude OAuth token:"
+      echo "  1. Inside devenv shell, run: claude"
+      echo "  2. Complete OAuth flow in browser"
+      echo "  3. Find token in ~/.claude/config.json"
+      echo "  4. Add it here"
+      echo ""
       
       # Prompt for keys
       read -p "Enter OpenRouter API key (or press Enter to skip): " openrouter_key
-      read -p "Enter Anthropic API key (or press Enter to skip): " anthropic_key
+      read -p "Enter Claude Code OAuth token (or press Enter to skip): " claude_token
       
       # Update .env file
       if [ -n "$openrouter_key" ]; then
-        sed -i "s|OPENROUTER_API_KEY=.*|OPENROUTER_API_KEY=$openrouter_key|" .env
+        ~/.local/node_modules/.bin/dotenvx set OPENROUTER_API_KEY "$openrouter_key"
         echo "✅ Updated OPENROUTER_API_KEY"
       fi
       
-      if [ -n "$anthropic_key" ]; then
-        sed -i "s|ANTHROPIC_API_KEY=.*|ANTHROPIC_API_KEY=$anthropic_key|" .env
-        echo "✅ Updated ANTHROPIC_API_KEY"
+      if [ -n "$claude_token" ]; then
+        ~/.local/node_modules/.bin/dotenvx set CLAUDE_CODE_OAUTH_TOKEN "$claude_token"
+        echo "✅ Updated CLAUDE_CODE_OAUTH_TOKEN"
       fi
       
-      if [ -n "$openrouter_key" ] || [ -n "$anthropic_key" ]; then
-        echo ""
-        echo "Re-encrypting .env file..."
-        dotenvx encrypt
-        echo ""
-        echo "✅ Keys encrypted and saved!"
+      if [ -n "$openrouter_key" ] || [ -n "$claude_token" ]; then
         echo ""
         echo "⚠️  IMPORTANT: Keep .env.keys safe! It's your decryption key."
         echo "    Never commit .env.keys to git."
@@ -135,6 +136,7 @@ GIT_DEFAULT_NAME=$git_name
 GIT_DEFAULT_EMAIL=$git_email
 OPENROUTER_API_KEY=
 ANTHROPIC_API_KEY=
+CLAUDE_CODE_OAUTH_TOKEN=
 EOF
         echo "✅ Created .env file"
       fi
