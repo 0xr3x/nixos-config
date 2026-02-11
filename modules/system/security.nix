@@ -107,7 +107,12 @@
 
   # Firejail profile for Cursor (restricted to project directory only)
   environment.etc."firejail/cursor.profile".text = ''
+    # Include common settings
+    include disable-common.inc
+    include disable-programs.inc
+    
     # Network access (needed for AI features)
+    # Note: Don't restrict network device as it causes issues on some systems
     
     # Only allow the directory being opened + config
     # This is set at runtime via --whitelist=$PROJECT_DIR
@@ -137,7 +142,6 @@
     # Disable dangerous features
     nodvd
     nogroups
-    noinput
     notv
     nou2f
     novideo
