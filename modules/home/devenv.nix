@@ -21,9 +21,8 @@ in
   # Install required tools for dev-env
   home.packages = with pkgs; [
     docker-compose
-    nodejs_22  # for npm/dotenvx
+    nodejs_22  # for npm
     gnumake
-    dotenvx    # Better dotenv - handles encryption
     devenvScript
   ];
   
@@ -140,10 +139,20 @@ EOF
         echo "✅ Created .env file"
       fi
       
+      # Install dotenvx locally (nixpkgs version is broken)
+      if ! command -v dotenvx >/dev/null 2>&1; then
+        echo "Installing dotenvx to ~/.local/bin..."
+        # Use pnpm for faster install
+        pnpm add -g @dotenvx/dotenvx --prefix ~/.local 2>/dev/null || \
+          npm install --prefix ~/.local @dotenvx/dotenvx
+        # Ensure it's in PATH
+        export PATH="$HOME/.local/bin:$PATH"
+      fi
+      
       # Encrypt .env if not already encrypted
       if [ ! -f .env.keys ]; then
         echo "Encrypting .env file..."
-        dotenvx encrypt
+        ~/.local/bin/dotenvx encrypt || dotenvx encrypt
         echo "⚠️  IMPORTANT: Keep .env.keys safe! It's your decryption key."
       fi
       
