@@ -1,67 +1,116 @@
 # NixOS Configuration
 
-Personal NixOS setup with flakes and home-manager.
+Security-focused NixOS setup with container-first development workflow.
 
-## System Specs
+## System
 
-- **OS**: NixOS unstable
+- **OS**: NixOS unstable + Flakes
 - **Desktop**: KDE Plasma 6 (Wayland)
-- **Laptop**: Intel CPU, NVMe SSD, 40GB RAM
-- **Security**: LUKS encryption, 1Password, firewall
-- **Battery**: TLP optimized for 8-10h runtime
+- **Hardware**: ThinkPad (Intel, 40GB RAM, NVMe)
+- **Security**: LUKS, USBGuard, Firejail, containerized dev
+- **Battery**: TLP optimized (8-10h runtime)
 
 ## Structure
 
-flake.nix              # Flake inputs/outputs
-configuration.nix      # Core system config
-home.nix              # User packages & dotfiles
-hardware-configuration.nix  # Generated per-machine (not in git)
+```
+flake.nix               # Flake configuration
+configuration.nix       # Core system settings
+home.nix               # User packages
+hardware-configuration.nix  # Generated (not in git)
 
-modules/system/
-├── desktop.nix       # KDE, fonts, GUI
-├── hardware.nix      # Audio, bluetooth, printing
-├── networking.nix    # Network, locale
-├── security.nix      # Firewall, 1Password, Firejail
-├── virtualisation.nix # Docker
-└── power.nix         # TLP battery optimization
+modules/
+├── system/
+│   ├── desktop.nix      # KDE, fonts
+│   ├── hardware.nix     # Audio, bluetooth, USB
+│   ├── networking.nix   # Network, DNS
+│   ├── security.nix     # Firewall, USBGuard, Firejail
+│   ├── virtualisation.nix # Podman
+│   └── power.nix        # TLP battery
+└── home/
+    ├── terminal.nix     # Kitty
+    ├── shell.nix        # Bash, starship, tools
+    └── git.nix          # Git config
 
-overlays/
-├── default.nix
-└── claude-code.nix   # Custom npx wrapper
+scripts/
+├── turtleclone         # Clone repos into containers
+├── turtlelist          # List turtle containers
+├── turtlenuke          # Destroy container + volume
+└── turtleshell         # Quick shell access
+```
 
 ## Quick Start
 
-Clone repo:
+```bash
+# Clone
 git clone git@github.com:0xr3x/nixos-config.git /etc/nixos
 
-Generate hardware config:
+# Generate hardware config
 sudo nixos-generate-config --show-hardware-config > /etc/nixos/hardware-configuration.nix
 
-Update home.nix with your details (username, email, SSH key)
+# Update home.nix with your username/email
 
-Build:
+# Build
 sudo nixos-rebuild switch --flake /etc/nixos#rex-nixos
+```
 
-## Aliases
+## Development Workflow
 
-rebuild      # Rebuild system
-update       # Update flake inputs and rebuild
-cleanup      # Delete old generations (30+ days)
+See [WORKFLOWS.md](WORKFLOWS.md) for detailed guide.
+
+**Quick summary:**
+- Trusted projects: Use Cursor + Claude Code directly
+- Untrusted repos: Use `turtleclone` → isolated containers
+- VS Code: Remote-only (connects to containers/SSH)
+
+## Key Commands
+
+```bash
+# System
+rebuild      # nixos-rebuild switch
+update       # Update all flake inputs
+cleanup      # Remove old generations
+
+# Battery
 bat-check    # Battery status
 bright       # Brightness control
 
+# Containers
+turtleclone <git-url>        # Clone repo into container
+turtlelist                   # List containers
+turtleshell <container>      # Enter container
+turtlenuke <container>       # Destroy container
+
+# Claude Code (containerized AI)
+claude chat "explain this"   # Current dir only
+```
+
+## Security Features
+
+✅ LUKS full disk encryption  
+✅ USBGuard (USB device whitelist)  
+✅ Firejail sandboxing (WPS Office, VS Code)  
+✅ Container-first untrusted code  
+✅ Firewall (deny all by default)  
+✅ 1Password integration  
+
+## Automation
+
+- **Weekly updates**: Flake inputs auto-update
+- **Garbage collection**: Weekly, 30+ day old generations removed
+- **Systemd timers**: Configured for both
+
 ## Notes
 
-- Auto-updates: Weekly (Saturdays)
-- Garbage collection: Weekly, removes 30+ day old generations
-- WPS Office: Sandboxed without network access
-- Battery: 50% CPU limit on battery, 6-8h normal / 8-10h with 30% brightness
+- WPS Office: Sandboxed, no network access
+- VS Code: Cannot access local files (remote-only)
+- Claude Code: Ephemeral containers
+- Battery: 50% CPU limit on battery power
 
-## Multi-Machine Setup
+## Multi-Machine
 
 1. Clone repo to new machine
-2. Generate hardware-configuration.nix for that machine
-3. Optionally: Change hostname in modules/system/networking.nix and update flake.nix
+2. Generate hardware-configuration.nix
+3. Update hostname in networking.nix + flake.nix
 4. Rebuild
 
 ## License

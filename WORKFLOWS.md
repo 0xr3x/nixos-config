@@ -1,175 +1,182 @@
 # Development Workflows
 
-This guide explains how to work with your sandboxed development setup.
+Security-first development setup with containerized untrusted code.
 
 ## Quick Reference
 
-| Tool | Access Level | Use Case |
-|------|--------------|----------|
-| **Cursor** | Full filesystem | Local development (trusted projects) |
+| Tool | Access | Use Case |
+|------|--------|----------|
+| **Cursor** | Full filesystem | Trusted local projects |
 | **VS Code** | Remote-only | Connect to containers/SSH |
-| **Claude Code** | Current directory only | AI assistance (containerized) |
-| **turtleclone** | Isolated containers | Clone untrusted repos |
+| **Claude Code** | Current dir only | AI assistance (containerized) |
+| **turtleclone** | Isolated | Untrusted repos |
 
-## Scenarios
+---
 
-### 1. Working on Trusted Project in ~/Documents
+## Working on Trusted Projects
 
 ```bash
-# Use Cursor (full access)
+# Open in Cursor
 cursor ~/Documents/my-project
 
-# Use Claude Code for AI assistance
+# Use Claude Code for AI
 cd ~/Documents/my-project
 claude chat "explain this function"
 claude /status
 
-# Note: Claude only sees files in ~/Documents/my-project
+# Note: Claude only sees current directory
 ```
 
-### 2. Cloning Untrusted Repository
+---
+
+## Cloning Untrusted Repos
 
 ```bash
 # Clone into isolated container
 turtleclone https://github.com/random/sketchy-repo
 
-# Container name will be shown, e.g.: turtle-sketchy-repo-1702938475
+# List containers
+turtlelist
 
-# Option A: Work inside container via terminal
-podman exec -it turtle-sketchy-repo-1702938475 bash
+# Enter container shell
+turtleshell turtle-sketchy-repo-1234567890
+
+# Inside container - fully isolated
 cd /workspace/sketchy-repo
-npm install
-npm start
+npm install && npm start
 
-# Option B: Use VS Code Remote-Containers
-code --remote container+turtle-sketchy-repo-1702938475
+# Use VS Code Remote
+code --remote container+turtle-sketchy-repo-1234567890
 
-# Option C: Use Cursor (needs manual setup)
-# Not recommended - container is isolated for a reason!
-
-# When done, nuke everything
-podman rm -f turtle-sketchy-repo-1702938475
-podman volume rm turtle-sketchy-repo-1702938475-data
+# Destroy when done
+turtlenuke turtle-sketchy-repo-1234567890
 ```
 
-### 3. Using Claude Code
+---
+
+## Claude Code Usage
 
 ```bash
-# Navigate to your project
 cd ~/Documents/my-project
 
-# Use Claude (mounts current directory)
+# Basic commands
 claude chat "refactor this code"
 claude /edit main.py "add error handling"
 claude --help
 
 # Limitations:
-# - Only sees files in current directory (and subdirectories)
-# - Cannot access parent directories
-# - Each invocation is ephemeral (no state preserved)
-# - NOT logged into Anthropic by default (uses public API)
+# - Only sees current directory (recursive)
+# - Ephemeral (no state between runs)
+# - Container destroyed after each use
 ```
 
-### 4. Anthropic Login for Claude
-
-**Claude Code in container does NOT persist authentication.**
-
-Each time you run `claude`, it's a fresh container. To authenticate:
+**Authentication:**
+Claude Code container is ephemeral. Pass API key via environment:
 
 ```bash
-# Option 1: Pass API key via environment
-export ANTHROPIC_API_KEY="your-key-here"
+export ANTHROPIC_API_KEY="your-key"
 claude chat "hello"
-
-# Option 2: Mount claude config (if you have one)
-# Add to shell function:
-podman run --rm -it \
-  -v "$PWD:/workspace:Z" \
-  -v "$HOME/.claude:/root/.claude:Z" \
-  -w /workspace \
-  ghcr.io/anthropics/claude-code:latest \
-  "$@"
 ```
 
-**Recommendation:** Use API key in environment variable for security.
+---
 
-### 5. VS Code Remote Development
+## VS Code Remote Development
 
-VS Code is sandboxed and can ONLY work remotely:
+VS Code is sandboxed - **cannot access local files** (by design).
 
 ```bash
-# Connect to SSH server
-code --remote ssh-remote+myserver /path/on/remote
+# Connect to SSH
+code --remote ssh-remote+myserver /path
 
-# Connect to turtle container
+# Connect to container
 code --remote container+turtle-myproject-123
 
-# Connect to any running container
-podman ps  # Find container ID
-code --remote container+<container-id>
+# List containers
+podman ps
 ```
 
-**VS Code cannot open local files** - this is intentional for security.
+---
 
-### 6. Moving Files Between Host and Container
+## Moving Files (Host ↔ Container)
 
 ```bash
-# Copy file FROM container TO host
-podman cp turtle-myproject-123:/workspace/repo/output.txt ~/Downloads/
+# Container → Host
+podman cp turtle-proj-123:/workspace/file.txt ~/Downloads/
 
-# Copy file FROM host TO container
-podman cp ~/Documents/config.json turtle-myproject-123:/workspace/repo/
-
-# Mount host directory into container (if needed)
-podman run -v ~/Documents/shared:/mnt/shared:Z ...
+# Host → Container  
+podman cp ~/file.txt turtle-proj-123:/workspace/
 ```
 
-## Recommended Workflows
+---
 
-### For Trusted Development
-```
-~/Documents/project → Cursor + Claude Code
-```
-
-### For Untrusted Code Review
-```
-turtleclone → VS Code Remote-Containers → Review in isolation
-```
-
-### For Quick Scripts/Testing
-```
-cd /tmp/experiment → Cursor or Claude → Disposable workspace
-```
-
-## Security Notes
-
-- **Cursor**: Full access - only use for trusted projects
-- **VS Code**: Remote-only - can't leak local files to remote servers
-- **Claude Code**: Containerized - can't access secrets or other projects
-- **turtleclone**: Fully isolated - malicious code can't escape
-
-## Limitations
-
-1. **Claude Code Authentication**: Not persistent across runs
-2. **VS Code Local Files**: Cannot open (by design)
-3. **Container Networking**: Limited (for security)
-4. **File Permissions**: SELinux `:Z` flag handles this
-
-## Tips
+## Turtle Helper Commands
 
 ```bash
 # List all turtle containers
-podman ps -a --filter "name=turtle-"
+turtlelist
 
-# Stop all turtle containers
+# Enter container shell
+turtleshell turtle-myproject-123 [/optional/path]
+
+# Destroy container + volume
+turtlenuke turtle-myproject-123
+
+# Manual cleanup (if needed)
 podman stop $(podman ps -q --filter "name=turtle-")
+podman volume prune
+```
 
-# Remove all turtle volumes
-podman volume ls --filter "name=turtle-" -q | xargs podman volume rm
+---
 
-# Check container resource usage
+## Recommended Workflows
+
+**Trusted work:**  
+`~/Documents/project` → Cursor + Claude Code
+
+**Untrusted review:**  
+`turtleclone` → VS Code Remote → Review isolated
+
+**Quick experiments:**  
+`/tmp/test` → Cursor or Claude → Disposable
+
+---
+
+## Security Model
+
+✅ **Cursor**: Full access - trusted projects only  
+✅ **VS Code**: Remote-only - can't leak local files  
+✅ **Claude Code**: Containerized - no access to secrets  
+✅ **turtleclone**: Isolated - malicious code trapped
+
+**Protected from:**
+- Prompt injection attacks
+- Malicious repos stealing credentials  
+- AI accessing sensitive files
+- Supply chain attacks
+
+---
+
+## Key Limitations
+
+1. Claude Code auth not persistent (use env var)
+2. VS Code cannot open local files (intentional)
+3. Containers have limited networking (security)
+4. Container startup takes 10-30 seconds
+
+---
+
+## Troubleshooting
+
+```bash
+# Container won't start
+podman logs turtle-myproject-123
+
+# Check resources
 podman stats
 
-# View container logs
-podman logs turtle-myproject-123
+# Clean up everything
+podman system prune -a --volumes
+
+# SELinux issues
+# Use :Z flag: -v "$PWD:/workspace:Z"
 ```
