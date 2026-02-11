@@ -111,18 +111,21 @@
     include disable-common.inc
     include disable-programs.inc
     
-    # Network access (needed for AI features)
-    # Note: Don't restrict network device as it causes issues on some systems
+    # Allow network (needed for AI features)
+    # Don't use net none - Cursor needs internet
     
     # Only allow the directory being opened + config
     # This is set at runtime via --whitelist=$PROJECT_DIR
     noblacklist ''${HOME}
     blacklist ''${HOME}
     
-    # Allow cursor config
+    # Allow cursor config and cache
     whitelist ''${HOME}/.cursor
     whitelist ''${HOME}/.config/Cursor
-    whitelist /tmp
+    whitelist ''${HOME}/.cache/Cursor
+    
+    # Wayland support (KDE Plasma)
+    noblacklist ''${RUNUSER}
     
     # Deny sensitive locations explicitly
     blacklist ''${HOME}/.ssh
@@ -134,7 +137,6 @@
     blacklist ''${HOME}/.1password
     
     # System restrictions
-    seccomp
     caps.drop all
     nonewprivs
     noroot
