@@ -82,7 +82,7 @@ For enhanced features like LLM hooks and Claude CLI:
 devenv-add-key
 
 # Or manually:
-cd ~/Documents/wonderland/dev-env
+cd ~/dev-env
 nano .env              # Add your keys
 dotenvx encrypt        # Re-encrypt
 ```

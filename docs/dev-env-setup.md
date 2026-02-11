@@ -26,7 +26,7 @@ nh os switch
 setup-devenv
 
 # This will:
-#   - Clone dev-env repo to ~/Documents/wonderland/dev-env
+#   - Clone dev-env repo to ~/dev-env
 #   - Check prerequisites (docker, npm, gh)
 #   - Create and encrypt .env file
 #   - Install dotenvx globally
@@ -97,7 +97,7 @@ Each project gets an isolated container with:
 ## Directory Structure
 
 ```
-~/Documents/wonderland/dev-env/    # dev-env repository
+~/dev-env/                        # dev-env repository
   ├── Dockerfile                   # Container definition
   ├── docker-compose.yml           # Service config
   ├── Makefile                     # CLI implementation
@@ -128,7 +128,7 @@ This will:
 If you prefer to edit directly:
 
 ```bash
-cd ~/Documents/wonderland/dev-env
+cd ~/dev-env
 
 # Edit .env file (add your keys)
 nano .env
