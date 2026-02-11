@@ -29,31 +29,6 @@
       # Unsandboxed Cursor (use with caution)
       cursor-unsafe = "code-cursor-fhs";
     };
-    
-    # Claude Code function (not alias) for better flexibility
-    initExtra = ''
-      claude() {
-        # If no arguments, show help
-        if [ $# -eq 0 ]; then
-          echo "Usage: claude <command> [args]"
-          echo ""
-          echo "Claude Code runs in an isolated container with current directory mounted."
-          echo ""
-          echo "Examples:"
-          echo "  claude chat 'explain this code'"
-          echo "  claude /status"
-          echo "  claude --help"
-          return 0
-        fi
-        
-        # Run claude in container with current directory mounted
-        podman run --rm -it \
-          -v "$PWD:/workspace:Z" \
-          -w /workspace \
-          ghcr.io/anthropics/claude-code:latest \
-          "$@"
-      }
-    '';
   };
 
   # Better shell prompt

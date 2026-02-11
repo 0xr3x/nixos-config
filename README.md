@@ -20,24 +20,26 @@ hardware-configuration.nix  # Generated (not in git)
 
 modules/
 ├── system/
-│   ├── desktop.nix      # KDE, fonts
-│   ├── hardware.nix     # Audio, bluetooth, USB
-│   ├── networking.nix   # Network, DNS
-│   ├── security.nix     # Firewall, USBGuard, Firejail
-│   ├── virtualisation.nix # Podman
-│   └── power.nix        # TLP battery
+│   ├── desktop.nix        # KDE, fonts
+│   ├── hardware.nix       # Audio, bluetooth, USB
+│   ├── networking.nix     # Network, DNS
+│   ├── security.nix       # Firewall, USBGuard, Firejail
+│   ├── virtualisation.nix # Podman/Docker
+│   └── power.nix          # TLP battery
 └── home/
-    ├── terminal.nix     # Kitty
-    ├── shell.nix        # Bash, starship, tools
-    └── git.nix          # Git config
+    ├── terminal.nix       # Kitty
+    ├── shell.nix          # Bash, starship, tools
+    ├── git.nix            # Git config
+    └── devenv.nix         # dev-env integration
 
 scripts/
-├── turtleclone         # Clone repos into containers
-├── turtlelist          # List turtle containers
-├── turtlecode          # Open VS Code Remote in container
-├── turtlenuke          # Destroy container + volume
-├── turtleshell         # Quick shell access
-└── cursor-safe         # Launch Cursor sandboxed to directory
+├── cursor-safe            # Launch Cursor sandboxed to directory
+└── cursor-safe-gui        # GUI wrapper for KDE launcher
+
+docs/
+├── WORKFLOWS.md           # Complete development workflows
+├── dev-env-setup.md       # dev-env setup guide
+└── cursor-sandboxing.md   # Cursor security documentation
 ```
 
 ## Quick Start
@@ -60,10 +62,10 @@ sudo nixos-rebuild switch --flake /etc/nixos#rex-nixos
 See [WORKFLOWS.md](WORKFLOWS.md) for detailed guide.
 
 **Quick summary:**
-- All development: Use `cursor` (sandboxed to project only)
-- Untrusted repos: Use `turtleclone` → isolated containers
-- VS Code: Remote-only (connects to containers/SSH)
-- Emergency: `cursor-unsafe` for full filesystem access
+- **IDE**: Click "Cursor" in KDE → select project → sandboxed automatically
+- **Development**: Use `devenv shell` for full dev environment per project
+- **Terminal**: `cursor ~/Documents/project` for sandboxed Cursor
+- **Emergency**: `cursor-unsafe` for full filesystem access
 
 ## Key Commands
 
@@ -77,26 +79,31 @@ cleanup      # Remove old generations
 bat-check    # Battery status
 bright       # Brightness control
 
-# Containers
-turtleclone <git-url>        # Clone repo into container
-turtlelist                   # List containers
-turtlecode <container>       # Open VS Code Remote
-turtleshell <container>      # Enter container
-turtlenuke <container>       # Destroy container
+# Development Environments
+devenv shell           # Start dev container for current project
+devenv shell --3000    # With port 3000 exposed
+devenv ps              # List all dev containers
+devenv stop            # Stop current project's container
+setup-devenv           # First-time dev-env setup
+devenv-add-key         # Add API keys (optional)
 
-# Claude Code (containerized AI)
-claude chat "explain this"   # Current dir only
+# Convenience
+dev                    # Short for 'devenv shell'
+dev-status             # Check container status
 ```
 
 ## Security Features
 
 ✅ LUKS full disk encryption  
 ✅ USBGuard (USB device whitelist)  
-✅ Firejail sandboxing (WPS, VS Code, Cursor)  
-✅ Container-first untrusted code  
+✅ Firejail sandboxing (Cursor, WPS Office)  
+✅ Container-first development (dev-env)  
+✅ Per-project isolated containers  
+✅ SSH agent forwarding (keys never in containers)  
 ✅ Firewall (deny all by default)  
 ✅ 1Password integration  
-✅ AI tools sandboxed (no ../ access)  
+✅ Cursor sandboxed to project directory only  
+✅ Opt-in port exposure (nothing exposed by default)  
 
 ## Automation
 
@@ -106,11 +113,12 @@ claude chat "explain this"   # Current dir only
 
 ## Notes
 
-- WPS Office: Sandboxed, no network access
-- VS Code: Cannot access local files (remote-only)
-- Cursor: Sandboxed to project directory (use cursor-unsafe for full access)
-- Claude Code: Ephemeral containers
-- Battery: 50% CPU limit on battery power
+- **WPS Office**: Sandboxed, no network access
+- **Cursor**: Sandboxed to project directory (KDE launcher prompts for directory)
+- **dev-env**: Full dev stack per project (Node, Rust, Python, Foundry, Neo4j, Claude Code)
+- **VS Code**: Remote-only (connects to containers/SSH)
+- **Battery**: 50% CPU limit on battery power
+- **API Keys**: Encrypted with dotenvx in dev-env
 
 ## Multi-Machine
 
