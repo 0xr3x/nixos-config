@@ -15,7 +15,7 @@ DEFAULT_DIR="$HOME/Documents"
 SELECTED_DIR=$(kdialog --getexistingdirectory "$DEFAULT_DIR" "Select project directory to open in Cursor (sandboxed)" 2>/dev/null || echo "")
 
 if [ -n "$SELECTED_DIR" ] && [ -d "$SELECTED_DIR" ]; then
-    exec cursor-safe "$SELECTED_DIR"
+    exec bash /etc/nixos/scripts/cursor-safe "$SELECTED_DIR"
 else
     # User cancelled or kdialog failed - show error
     kdialog --error "No directory selected. Cursor requires a project directory to open." 2>/dev/null || true
