@@ -145,23 +145,23 @@
 
   programs.firejail.wrappedBinaries = {
     wps = {
-      executable = "''${pkgs.wpsoffice}/bin/wps";
+      executable = "${pkgs.wpsoffice}/bin/wps";
       profile = "/etc/firejail/wps.profile";
     };
     et = {
-      executable = "''${pkgs.wpsoffice}/bin/et";
+      executable = "${pkgs.wpsoffice}/bin/et";
       profile = "/etc/firejail/wps.profile";
     };
     wpp = {
-      executable = "''${pkgs.wpsoffice}/bin/wpp";
+      executable = "${pkgs.wpsoffice}/bin/wpp";
       profile = "/etc/firejail/wps.profile";
     };
     wpspdf = {
-      executable = "''${pkgs.wpsoffice}/bin/wpspdf";
+      executable = "${pkgs.wpsoffice}/bin/wpspdf";
       profile = "/etc/firejail/wps.profile";
     };
     wpm = {
-      executable = "''${pkgs.wpsoffice}/bin/wpm";
+      executable = "${pkgs.wpsoffice}/bin/wpm";
       profile = "/etc/firejail/wps.profile";
     };
     
