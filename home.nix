@@ -83,6 +83,7 @@
 
     # KDE apps
     kdePackages.kate
+    kdialog  # For cursor-safe-gui directory picker
 
     # Development tools
     code-cursor-fhs
