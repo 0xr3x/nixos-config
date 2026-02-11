@@ -1,0 +1,131 @@
+#!/usr/bin/env bash
+# turtleclone - Clone git repos into isolated Podman containers
+# Usage: turtleclone <git-url> [container-name]
+
+set -euo pipefail
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+log_info() { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
+log_step() { echo -e "${BLUE}▶${NC} $1"; }
+
+# Check if git URL is provided
+if [ $# -lt 1 ]; then
+    echo "Usage: turtleclone <git-url> [container-name]"
+    echo ""
+    echo "Examples:"
+    echo "  turtleclone https://github.com/user/repo"
+    echo "  turtleclone git@github.com:user/repo.git my-project"
+    echo ""
+    echo "The container will have:"
+    echo "  - Isolated filesystem (no access to host)"
+    echo "  - Full development tools (git, node, python, rust, etc.)"
+    echo "  - Your .gitconfig mounted read-only"
+    echo "  - SSH agent forwarded (for private repos)"
+    exit 1
+fi
+
+GIT_URL="$1"
+
+# Extract repo name from URL
+REPO_NAME=$(basename "$GIT_URL" .git)
+
+# Use provided container name or generate one
+if [ $# -ge 2 ]; then
+    CONTAINER_NAME="$2"
+else
+    CONTAINER_NAME="turtle-${REPO_NAME}-$(date +%s)"
+fi
+
+log_info "Creating isolated container: ${CONTAINER_NAME}"
+log_info "Cloning: ${GIT_URL}"
+
+# Create persistent volume for the project
+VOLUME_NAME="${CONTAINER_NAME}-data"
+log_step "Creating persistent volume..."
+podman volume create "$VOLUME_NAME" > /dev/null
+
+# Create the container with the repo
+log_step "Spinning up development container..."
+
+# Base image with dev tools (you can customize this)
+DEV_IMAGE="docker.io/library/ubuntu:24.04"
+
+# Check if SSH agent is available for private repos
+SSH_AUTH_ARGS=""
+if [ -n "${SSH_AUTH_SOCK:-}" ]; then
+    SSH_AUTH_ARGS="-v $SSH_AUTH_SOCK:/ssh-agent:Z -e SSH_AUTH_SOCK=/ssh-agent"
+    log_info "SSH agent forwarded (can clone private repos)"
+fi
+
+# Create and start the container
+podman run -d \
+    --name "$CONTAINER_NAME" \
+    --hostname "$CONTAINER_NAME" \
+    -v "$VOLUME_NAME:/workspace:Z" \
+    -v "$HOME/.gitconfig:/etc/gitconfig:ro,Z" \
+    $SSH_AUTH_ARGS \
+    --security-opt=no-new-privileges \
+    --cap-drop=ALL \
+    --cap-add=NET_RAW \
+    "$DEV_IMAGE" \
+    sleep infinity > /dev/null
+
+log_step "Installing development tools..."
+podman exec "$CONTAINER_NAME" bash -c "
+    apt-get update -qq > /dev/null 2>&1 && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \
+        git curl wget \
+        build-essential \
+        python3 python3-pip python3-venv \
+        nodejs npm \
+        vim nano \
+        ca-certificates \
+        > /dev/null 2>&1
+" || log_error "Failed to install development tools"
+
+log_step "Cloning repository..."
+podman exec "$CONTAINER_NAME" bash -c "
+    cd /workspace && \
+    git clone '$GIT_URL' '$REPO_NAME'
+" || log_error "Failed to clone repository"
+
+log_info "✅ Container created successfully!"
+echo ""
+echo -e "${GREEN}Container:${NC} $CONTAINER_NAME"
+echo -e "${GREEN}Volume:${NC} $VOLUME_NAME"
+echo -e "${GREEN}Workspace:${NC} /workspace/$REPO_NAME"
+echo ""
+echo "Quick start commands:"
+echo ""
+echo "  # Enter the container:"
+echo "  ${BLUE}podman exec -it $CONTAINER_NAME bash${NC}"
+echo ""
+echo "  # Enter the project directory:"
+echo "  ${BLUE}podman exec -it -w /workspace/$REPO_NAME $CONTAINER_NAME bash${NC}"
+echo ""
+echo "  # Run a command in the container:"
+echo "  ${BLUE}podman exec -w /workspace/$REPO_NAME $CONTAINER_NAME <command>${NC}"
+echo ""
+echo "  # Stop the container:"
+echo "  ${BLUE}podman stop $CONTAINER_NAME${NC}"
+echo ""
+echo "  # Remove the container (keeps data in volume):"
+echo "  ${BLUE}podman rm $CONTAINER_NAME${NC}"
+echo ""
+echo "  # Remove everything (container + volume):"
+echo "  ${BLUE}podman rm -f $CONTAINER_NAME && podman volume rm $VOLUME_NAME${NC}"
+echo ""
+
+# Create helper aliases
+log_info "Creating shell alias for easy access..."
+echo ""
+echo "Add this to your shell config for quick access:"
+echo "  ${BLUE}alias ${REPO_NAME}='podman exec -it -w /workspace/$REPO_NAME $CONTAINER_NAME bash'${NC}"

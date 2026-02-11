@@ -14,6 +14,7 @@
   home.stateVersion = "25.11";
   home.sessionPath = [
     "$HOME/.local/bin"
+    "/etc/nixos/scripts"  # For custom scripts like turtleclone
   ];
 
   home.sessionVariables = {
@@ -43,6 +44,7 @@
     kdePackages.kate
 
     # Development tools
+    code-cursor-fhs
     nodejs_22
     pnpm
     uv
