@@ -34,8 +34,12 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-# Launch cursor with firejail, whitelisting only the target directory
+# Launch cursor with firejail
+# --private creates empty home, then we bind-mount what we need
 exec firejail \
     --profile=/etc/firejail/cursor.profile \
-    --whitelist="$TARGET_DIR" \
+    --private \
+    --bind="$TARGET_DIR","$TARGET_DIR" \
+    --bind="$HOME/.cursor","$HOME/.cursor" \
+    --bind="$HOME/.config/Cursor","$HOME/.config/Cursor" \
     cursor "$TARGET_DIR"

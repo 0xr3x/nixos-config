@@ -113,25 +113,11 @@
     
     # Allow network (needed for AI features)
     
-    # Start with everything blocked
-    # The --whitelist=$PROJECT_DIR from cursor-safe will add the project
+    # Note: cursor-safe uses --private --bind for isolation
+    # This profile provides the base restrictions
     
-    # Allow cursor config and cache
-    noblacklist ''${HOME}/.cursor
-    noblacklist ''${HOME}/.config/Cursor
-    noblacklist ''${HOME}/.cache/Cursor
-    
-    # Wayland support (KDE Plasma)
+    # Wayland support
     noblacklist ''${RUNUSER}
-    
-    # Block sensitive locations (defense in depth)
-    blacklist ''${HOME}/.ssh
-    blacklist ''${HOME}/.gnupg
-    blacklist ''${HOME}/.password-store
-    blacklist ''${HOME}/.aws
-    blacklist ''${HOME}/.kube
-    blacklist ''${HOME}/.docker
-    blacklist ''${HOME}/.1password
     
     # System restrictions
     caps.drop all
