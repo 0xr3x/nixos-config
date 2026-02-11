@@ -34,35 +34,8 @@ if [ ! -d "$TARGET_DIR" ]; then
     exit 1
 fi
 
-# Ensure Cursor directories exist
-mkdir -p "$HOME/.cursor"
-mkdir -p "$HOME/.config/Cursor"
-mkdir -p "$HOME/.cache/Cursor"
-
-# Get cursor binary path
-CURSOR_BIN="$(readlink -f "$(command -v cursor)" 2>/dev/null || echo "/usr/bin/cursor")"
-
-# Launch cursor with bubblewrap (NixOS-compatible)
-exec bwrap \
-    --ro-bind /nix /nix \
-    --ro-bind-try /etc /etc \
-    --dev /dev \
-    --proc /proc \
-    --tmpfs /tmp \
-    --tmpfs /run \
-    --ro-bind /sys /sys \
-    --ro-bind-try /run/current-system /run/current-system \
-    --ro-bind "$XDG_RUNTIME_DIR/wayland-0" "$XDG_RUNTIME_DIR/wayland-0" \
-    --ro-bind-try "$XDG_RUNTIME_DIR/pulse" "$XDG_RUNTIME_DIR/pulse" \
-    --ro-bind-try "$XDG_RUNTIME_DIR/pipewire-0" "$XDG_RUNTIME_DIR/pipewire-0" \
-    --bind "$TARGET_DIR" "$TARGET_DIR" \
-    --bind "$HOME/.cursor" "$HOME/.cursor" \
-    --bind "$HOME/.config/Cursor" "$HOME/.config/Cursor" \
-    --bind "$HOME/.cache/Cursor" "$HOME/.cache/Cursor" \
-    --setenv HOME "$HOME" \
-    --setenv XDG_RUNTIME_DIR "$XDG_RUNTIME_DIR" \
-    --setenv WAYLAND_DISPLAY "$WAYLAND_DISPLAY" \
-    --setenv PATH "$PATH" \
-    --unshare-pid \
-    --die-with-parent \
-    "$CURSOR_BIN" "$TARGET_DIR"
+# Launch cursor with firejail, whitelisting only the target directory
+exec firejail \
+    --profile=/etc/firejail/cursor.profile \
+    --whitelist="$TARGET_DIR" \
+    cursor "$TARGET_DIR"
