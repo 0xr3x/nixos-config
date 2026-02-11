@@ -11,4 +11,14 @@
       dates = "weekly";
     };
   };
+  
+  # Enable rootless containers
+  virtualisation.containers.enable = true;
+  
+  # Configure subuid/subgid for rootless containers
+  users.users.rex = {
+    extraGroups = [ "podman" ];
+    subUidRanges = [{ startUid = 100000; count = 65536; }];
+    subGidRanges = [{ startGid = 100000; count = 65536; }];
+  };
 }
