@@ -39,9 +39,13 @@ mkdir -p "$HOME/.cursor"
 mkdir -p "$HOME/.config/Cursor"
 mkdir -p "$HOME/.cache/Cursor"
 
+# Get cursor binary path
+CURSOR_BIN="$(readlink -f "$(command -v cursor)" 2>/dev/null || echo "/usr/bin/cursor")"
+
 # Launch cursor with bubblewrap (NixOS-compatible)
 exec bwrap \
     --ro-bind /nix /nix \
+    --ro-bind-try /etc /etc \
     --dev /dev \
     --proc /proc \
     --tmpfs /tmp \
@@ -61,4 +65,4 @@ exec bwrap \
     --setenv PATH "$PATH" \
     --unshare-pid \
     --die-with-parent \
-    cursor "$TARGET_DIR"
+    "$CURSOR_BIN" "$TARGET_DIR"
