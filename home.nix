@@ -115,6 +115,9 @@
     dust        # Better du
     duf         # Better df
     procs       # Better ps
+    
+    # Sandboxing
+    bubblewrap  # Better sandboxing for Cursor
 
     # CLI utilities
     ripgrep

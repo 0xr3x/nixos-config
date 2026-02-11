@@ -113,8 +113,19 @@
     
     # Allow network (needed for AI features)
     
-    # Note: cursor-safe uses --private --bind for isolation
-    # This profile provides the base restrictions
+    # Explicitly block sensitive dirs before whitelist
+    blacklist ''${HOME}/.ssh
+    blacklist ''${HOME}/.gnupg
+    blacklist ''${HOME}/.password-store
+    blacklist ''${HOME}/.aws
+    blacklist ''${HOME}/.kube
+    blacklist ''${HOME}/.docker
+    blacklist ''${HOME}/.1password
+    
+    # Allow cursor config
+    noblacklist ''${HOME}/.cursor
+    noblacklist ''${HOME}/.config/Cursor
+    noblacklist ''${HOME}/.cache/Cursor
     
     # Wayland support
     noblacklist ''${RUNUSER}
