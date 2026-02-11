@@ -167,7 +167,7 @@
     
     # VS Code (locked down for remote-only use)
     code = {
-      executable = "''${pkgs.vscode}/bin/code";
+      executable = "${pkgs.vscode}/bin/code";
       profile = "/etc/firejail/vscode.profile";
     };
   };
