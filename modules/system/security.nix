@@ -65,26 +65,72 @@
     caps.drop all
   '';
 
+  # Firejail profile for VS Code (minimal filesystem, remote development only)
+  environment.etc."firejail/vscode.profile".text = ''
+    # Network access (needed for remote development)
+    
+    # Minimal filesystem access
+    whitelist ''${HOME}/.vscode
+    whitelist ''${HOME}/.config/Code
+    whitelist ''${HOME}/.config/code-server
+    whitelist /tmp
+    
+    # Explicitly deny everything else
+    blacklist ''${HOME}/Documents
+    blacklist ''${HOME}/Downloads
+    blacklist ''${HOME}/Projects
+    blacklist ''${HOME}/.ssh
+    blacklist ''${HOME}/.gnupg
+    blacklist ''${HOME}/.password-store
+    blacklist ''${HOME}/.aws
+    blacklist ''${HOME}/.kube
+    blacklist ''${HOME}/.docker
+    blacklist ''${HOME}/.1password
+    
+    # System restrictions
+    seccomp
+    caps.drop all
+    nonewprivs
+    noroot
+    
+    # Disable dangerous features
+    nodvd
+    nogroups
+    noinput
+    notv
+    nou2f
+    novideo
+    
+    # Allow only remote development
+    read-only ''${HOME}/.ssh/config
+  '';
+
   programs.firejail.wrappedBinaries = {
     wps = {
-      executable = "${pkgs.wpsoffice}/bin/wps";
+      executable = "''${pkgs.wpsoffice}/bin/wps";
       profile = "/etc/firejail/wps.profile";
     };
     et = {
-      executable = "${pkgs.wpsoffice}/bin/et";
+      executable = "''${pkgs.wpsoffice}/bin/et";
       profile = "/etc/firejail/wps.profile";
     };
     wpp = {
-      executable = "${pkgs.wpsoffice}/bin/wpp";
+      executable = "''${pkgs.wpsoffice}/bin/wpp";
       profile = "/etc/firejail/wps.profile";
     };
     wpspdf = {
-      executable = "${pkgs.wpsoffice}/bin/wpspdf";
+      executable = "''${pkgs.wpsoffice}/bin/wpspdf";
       profile = "/etc/firejail/wps.profile";
     };
     wpm = {
-      executable = "${pkgs.wpsoffice}/bin/wpm";
+      executable = "''${pkgs.wpsoffice}/bin/wpm";
       profile = "/etc/firejail/wps.profile";
+    };
+    
+    # VS Code (locked down for remote-only use)
+    code = {
+      executable = "''${pkgs.vscode}/bin/code";
+      profile = "/etc/firejail/vscode.profile";
     };
   };
 }

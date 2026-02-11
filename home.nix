@@ -43,15 +43,14 @@
     kdePackages.kate
 
     # Development tools
-    code-cursor-fhs
     nodejs_22
     pnpm
     uv
     foundry
-    claude-code  # From claude-code-nix flake
     gh          # GitHub CLI
     lazygit     # TUI for git
     docker-compose
+    vscode      # Sandboxed via firejail for remote development only
 
     # Office
     wpsoffice

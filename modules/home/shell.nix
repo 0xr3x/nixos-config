@@ -22,6 +22,9 @@
       bat-check = "acpi -b";
       bright = "brightnessctl";
       cd = "z";  # use zoxide
+      
+      # Claude Code in ephemeral Podman container
+      claude = "podman run --rm -it -v \"$PWD:/workspace:Z\" -w /workspace ghcr.io/anthropics/claude-code:latest";
     };
   };
 
