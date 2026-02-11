@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# turtleshell - Quick access to a turtle container shell
+
+set -euo pipefail
+
+if [ $# -lt 1 ]; then
+    echo "Usage: turtleshell <container-name> [directory]"
+    echo ""
+    echo "Quick access to turtle container shells."
+    echo ""
+    echo "Available containers:"
+    podman ps -a --filter "name=^turtle-" --format "  - {{.Names}}"
+    exit 1
+fi
+
+CONTAINER_NAME="$1"
+WORKDIR="${2:-/workspace}"
+
+# Check if container is running
+if ! podman ps --format "{{.Names}}" | grep -q "^${CONTAINER_NAME}$"; then
+    echo "Container '${CONTAINER_NAME}' is not running."
+    echo "Starting it..."
+    podman start "$CONTAINER_NAME"
+    sleep 1
+fi
+
+# Enter the container
+exec podman exec -it -w "$WORKDIR" "$CONTAINER_NAME" bash

@@ -65,21 +65,21 @@
     caps.drop all
   '';
 
-  # Firejail profile for VS Code (minimal filesystem, remote development only)
+  # Firejail profile for VS Code (REMOTE ONLY - no local files)
   environment.etc."firejail/vscode.profile".text = ''
     # Network access (needed for remote development)
     
-    # Minimal filesystem access
+    # Minimal filesystem - config only
     whitelist ''${HOME}/.vscode
     whitelist ''${HOME}/.config/Code
-    whitelist ''${HOME}/.config/code-server
+    whitelist ''${HOME}/.ssh/config
     whitelist /tmp
     
-    # Explicitly deny everything else
+    # Block EVERYTHING else
     blacklist ''${HOME}/Documents
-    blacklist ''${HOME}/Downloads
+    blacklist ''${HOME}/Downloads  
     blacklist ''${HOME}/Projects
-    blacklist ''${HOME}/.ssh
+    blacklist ''${HOME}/.ssh/id_*
     blacklist ''${HOME}/.gnupg
     blacklist ''${HOME}/.password-store
     blacklist ''${HOME}/.aws
@@ -101,7 +101,7 @@
     nou2f
     novideo
     
-    # Allow only remote development
+    # Read-only SSH config (can see remotes, can't modify keys)
     read-only ''${HOME}/.ssh/config
   '';
 
