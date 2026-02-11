@@ -142,17 +142,16 @@ EOF
       # Install dotenvx locally (nixpkgs version is broken)
       if ! command -v dotenvx >/dev/null 2>&1; then
         echo "Installing dotenvx to ~/.local/bin..."
-        # Use pnpm for faster install
-        pnpm add -g @dotenvx/dotenvx --prefix ~/.local 2>/dev/null || \
-          npm install --prefix ~/.local @dotenvx/dotenvx
+        # npm --prefix installs to prefix/node_modules/.bin/
+        npm install --prefix ~/.local @dotenvx/dotenvx
         # Ensure it's in PATH
-        export PATH="$HOME/.local/bin:$PATH"
+        export PATH="$HOME/.local/node_modules/.bin:$HOME/.local/bin:$PATH"
       fi
       
       # Encrypt .env if not already encrypted
       if [ ! -f .env.keys ]; then
         echo "Encrypting .env file..."
-        ~/.local/bin/dotenvx encrypt || dotenvx encrypt
+        ~/.local/node_modules/.bin/dotenvx encrypt || dotenvx encrypt
         echo "⚠️  IMPORTANT: Keep .env.keys safe! It's your decryption key."
       fi
       
