@@ -38,15 +38,15 @@ turtleclone https://github.com/random/sketchy-repo
 # List containers
 turtlelist
 
-# Enter container shell
+# Open in VS Code Remote (easiest)
+turtlecode turtle-sketchy-repo-1234567890
+
+# Or enter container shell
 turtleshell turtle-sketchy-repo-1234567890
 
 # Inside container - fully isolated
 cd /workspace/sketchy-repo
 npm install && npm start
-
-# Use VS Code Remote
-code --remote container+turtle-sketchy-repo-1234567890
 
 # Destroy when done
 turtlenuke turtle-sketchy-repo-1234567890
@@ -114,6 +114,9 @@ podman cp ~/file.txt turtle-proj-123:/workspace/
 ```bash
 # List all turtle containers
 turtlelist
+
+# Open VS Code Remote in container
+turtlecode turtle-myproject-123 [/optional/path]
 
 # Enter container shell
 turtleshell turtle-myproject-123 [/optional/path]

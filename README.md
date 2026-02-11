@@ -34,6 +34,7 @@ modules/
 scripts/
 ├── turtleclone         # Clone repos into containers
 ├── turtlelist          # List turtle containers
+├── turtlecode          # Open VS Code Remote in container
 ├── turtlenuke          # Destroy container + volume
 └── turtleshell         # Quick shell access
 ```
@@ -77,6 +78,7 @@ bright       # Brightness control
 # Containers
 turtleclone <git-url>        # Clone repo into container
 turtlelist                   # List containers
+turtlecode <container>       # Open VS Code Remote
 turtleshell <container>      # Enter container
 turtlenuke <container>       # Destroy container
 
