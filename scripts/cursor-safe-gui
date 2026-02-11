@@ -2,37 +2,22 @@
 # cursor-safe-gui - Launch Cursor sandboxed with GUI support
 # This wrapper handles being launched from desktop without arguments
 
-set -euo pipefail
-
 # If launched with a directory argument, use it
 if [ $# -ge 1 ] && [ -d "$1" ]; then
     exec cursor-safe "$1"
 fi
 
-# If launched with %F from desktop but no file, use Documents
-if [ $# -eq 0 ] || [ "$1" = "%F" ] || [ "$1" = "" ]; then
-    # Default to Documents directory if it exists, otherwise home
-    if [ -d "$HOME/Documents" ]; then
-        DEFAULT_DIR="$HOME/Documents"
-    else
-        DEFAULT_DIR="$HOME"
-    fi
-    
-    # Show a GUI dialog to select directory (using kdialog for KDE)
-    if command -v kdialog >/dev/null 2>&1; then
-        SELECTED_DIR=$(kdialog --getexistingdirectory "$DEFAULT_DIR" "Select project directory to open in Cursor (sandboxed)")
-        if [ -n "$SELECTED_DIR" ] && [ -d "$SELECTED_DIR" ]; then
-            exec cursor-safe "$SELECTED_DIR"
-        else
-            # User cancelled
-            exit 0
-        fi
-    else
-        # Fallback: just open Documents
-        exec cursor-safe "$DEFAULT_DIR"
-    fi
-fi
+# Default directory for dialog
+DEFAULT_DIR="$HOME/Documents"
+[ ! -d "$DEFAULT_DIR" ] && DEFAULT_DIR="$HOME"
 
-# If we got here, something unexpected happened
-echo "Error: Invalid arguments"
-exit 1
+# Show a GUI dialog to select directory (using kdialog for KDE)
+SELECTED_DIR=$(kdialog --getexistingdirectory "$DEFAULT_DIR" "Select project directory to open in Cursor (sandboxed)" 2>/dev/null || echo "")
+
+if [ -n "$SELECTED_DIR" ] && [ -d "$SELECTED_DIR" ]; then
+    exec cursor-safe "$SELECTED_DIR"
+else
+    # User cancelled or kdialog failed - show error
+    kdialog --error "No directory selected. Cursor requires a project directory to open." 2>/dev/null || true
+    exit 0
+fi
