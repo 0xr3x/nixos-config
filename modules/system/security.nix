@@ -105,44 +105,6 @@
     read-only ''${HOME}/.ssh/config
   '';
 
-  # Firejail profile for Cursor (restricted to project directory only)
-  environment.etc."firejail/cursor.profile".text = ''
-    # Include common settings
-    include disable-common.inc
-    include disable-programs.inc
-    
-    # Allow network (needed for AI features)
-    
-    # Explicitly block sensitive dirs before whitelist
-    blacklist ''${HOME}/.ssh
-    blacklist ''${HOME}/.gnupg
-    blacklist ''${HOME}/.password-store
-    blacklist ''${HOME}/.aws
-    blacklist ''${HOME}/.kube
-    blacklist ''${HOME}/.docker
-    blacklist ''${HOME}/.1password
-    
-    # Allow cursor config
-    noblacklist ''${HOME}/.cursor
-    noblacklist ''${HOME}/.config/Cursor
-    noblacklist ''${HOME}/.cache/Cursor
-    
-    # Wayland support
-    noblacklist ''${RUNUSER}
-    
-    # System restrictions
-    caps.drop all
-    nonewprivs
-    noroot
-    
-    # Disable dangerous features
-    nodvd
-    nogroups
-    notv
-    nou2f
-    novideo
-  '';
-
   programs.firejail.wrappedBinaries = {
     wps = {
       executable = "${pkgs.wpsoffice}/bin/wps";

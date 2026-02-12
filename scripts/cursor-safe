@@ -36,6 +36,21 @@ fi
 
 # Launch cursor with firejail, whitelisting only the target directory
 exec firejail \
-    --profile=/etc/firejail/cursor.profile \
+    --noprofile \
+    --read-only=/nix/store \
+    --private-tmp \
+    --blacklist=~/.ssh \
+    --blacklist=~/.aws \
+    --blacklist=~/.gnupg \
+    --blacklist=~/.password-store \
+    --blacklist=~/.kube \
+    --blacklist=~/.docker \
+    --blacklist=~/.1password \
     --whitelist="$TARGET_DIR" \
+    --whitelist=~/.cursor \
+    --whitelist=~/.config/Cursor \
+    --whitelist=~/.cache/Cursor \
+    --caps.drop=all \
+    --nonewprivs \
+    --noroot \
     cursor "$TARGET_DIR"
