@@ -46,7 +46,7 @@ exec firejail \
     --blacklist=~/.password-store \
     --blacklist=~/.kube \
     --blacklist=~/.docker \
-    --blacklist=~/.1password \
+    --read-only=~/.1password \
     --read-write="$TARGET_DIR" \
     --read-write=~/.cursor \
     --read-write=~/.config/Cursor \
