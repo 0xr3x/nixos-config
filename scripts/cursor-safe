@@ -35,10 +35,11 @@ if [ ! -d "$TARGET_DIR" ]; then
 fi
 
 # Launch cursor with firejail, whitelisting only the target directory
+# NOTE: --read-write must come BEFORE --read-only=$HOME so firejail can create
+# writable bind mounts for subdirs before the parent gets mounted read-only
 exec firejail \
     --noprofile \
     --read-only=/nix/store \
-    --read-only="$HOME" \
     --private-tmp \
     --read-only=~/.ssh/known_hosts \
     --read-only=~/.ssh/config \
@@ -56,6 +57,7 @@ exec firejail \
     --read-write=~/.config/Cursor \
     --read-write=~/.cache/Cursor \
     --read-write=~/.cache/uv \
+    --read-only="$HOME" \
     --caps.drop=all \
     --nonewprivs \
     --noroot \
