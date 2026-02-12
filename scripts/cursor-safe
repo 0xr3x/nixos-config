@@ -13,8 +13,7 @@ if [ $# -lt 1 ]; then
     echo "  cursor-safe ."
     echo ""
     echo "Security:"
-    echo "  - Only the specified directory is accessible"
-    echo "  - ~/.ssh, ~/.aws, and other projects are blocked"
+    echo "  - SSH keys, ~/.aws, ~/.gnupg, etc. are blacklisted"
     echo "  - AI chat cannot access parent directories"
     exit 1
 fi
@@ -38,9 +37,9 @@ fi
 # Firejail rejects paths with trailing slashes as "invalid filename"
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-# Launch cursor with firejail, whitelisting only the target directory
-# NOTE: --read-write must come BEFORE --read-only=$HOME so firejail can create
-# writable bind mounts for subdirs before the parent gets mounted read-only
+# Launch cursor with firejail. Blacklists protect credentials; --read-only=$HOME
+# breaks Electron on Wayland so we omit it (Cursor needs write access to various
+# home dirs for init, extensions, etc).
 exec firejail \
     --noprofile \
     --read-only=/nix/store \
@@ -56,12 +55,6 @@ exec firejail \
     --blacklist=~/.kube \
     --blacklist=~/.docker \
     --read-only=~/.1password \
-    --read-write="$TARGET_DIR" \
-    --read-write=~/.cursor \
-    --read-write=~/.config/Cursor \
-    --read-write=~/.cache/Cursor \
-    --read-write=~/.cache/uv \
-    --read-only="$HOME" \
     --caps.drop=all \
     --nonewprivs \
     --noroot \
