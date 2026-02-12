@@ -38,6 +38,7 @@ fi
 exec firejail \
     --noprofile \
     --read-only=/nix/store \
+    --read-only="$HOME" \
     --private-tmp \
     --blacklist=~/.ssh \
     --blacklist=~/.aws \
@@ -46,10 +47,10 @@ exec firejail \
     --blacklist=~/.kube \
     --blacklist=~/.docker \
     --blacklist=~/.1password \
-    --whitelist="$TARGET_DIR" \
-    --whitelist=~/.cursor \
-    --whitelist=~/.config/Cursor \
-    --whitelist=~/.cache/Cursor \
+    --read-write="$TARGET_DIR" \
+    --read-write=~/.cursor \
+    --read-write=~/.config/Cursor \
+    --read-write=~/.cache/Cursor \
     --caps.drop=all \
     --nonewprivs \
     --noroot \
