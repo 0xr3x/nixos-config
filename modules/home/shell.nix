@@ -4,6 +4,7 @@
   # Environment variables
   home.sessionVariables = {
     NH_FLAKE = "/etc/nixos";
+    SSH_AUTH_SOCK = "$HOME/.1password/agent.sock";
   };
 
   # Bash configuration
