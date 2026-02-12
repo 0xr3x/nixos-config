@@ -5,6 +5,7 @@ let
   devEnvRepo = "${config.home.homeDirectory}/dev-env";
   
   # Create the devenv wrapper script
+  # (dotenvx from ~/.local/node_modules/.bin via home.sessionPath)
   devenvScript = pkgs.writeShellScriptBin "devenv" ''
     # Check if dev-env repo exists
     if [ ! -d "${devEnvRepo}" ]; then
@@ -12,7 +13,17 @@ let
       echo "Clone it first: git clone git@github.com:defi-wonderland/dev-env.git ${devEnvRepo}"
       exit 1
     fi
-    
+
+    # Ensure SSH agent env for container forwarding (Cursor/IDE terminals may not inherit sessionVariables)
+    if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ]; then
+      for sock in "$HOME/.1password/agent.sock" "$HOME/.1Password/agent.sock" "$HOME/.config/1Password/agent.sock"; do
+        if [ -S "$sock" ]; then
+          export SSH_AUTH_SOCK="$sock"
+          break
+        fi
+      done
+    fi
+
     # Run the Makefile with all arguments passed through
     exec make -f "${devEnvRepo}/Makefile" -- "$@"
   '';
@@ -56,8 +67,8 @@ in
       echo ""
       echo "Current keys (encrypted):"
       if [ -f .env.keys ]; then
-        ~/.local/node_modules/.bin/dotenvx get OPENROUTER_API_KEY >/dev/null 2>&1 && echo "✅ OPENROUTER_API_KEY: Set" || echo "❌ OPENROUTER_API_KEY: Empty"
-        ~/.local/node_modules/.bin/dotenvx get CLAUDE_CODE_OAUTH_TOKEN >/dev/null 2>&1 && echo "✅ CLAUDE_CODE_OAUTH_TOKEN: Set" || echo "❌ CLAUDE_CODE_OAUTH_TOKEN: Empty"
+        "$HOME/.local/node_modules/.bin/dotenvx" get OPENROUTER_API_KEY >/dev/null 2>&1 && echo "✅ OPENROUTER_API_KEY: Set" || echo "❌ OPENROUTER_API_KEY: Empty"
+        "$HOME/.local/node_modules/.bin/dotenvx" get CLAUDE_CODE_OAUTH_TOKEN >/dev/null 2>&1 && echo "✅ CLAUDE_CODE_OAUTH_TOKEN: Set" || echo "❌ CLAUDE_CODE_OAUTH_TOKEN: Empty"
       else
         echo "⚠️  No encrypted keys yet"
       fi
@@ -75,12 +86,12 @@ in
       
       # Update .env file
       if [ -n "$openrouter_key" ]; then
-        ~/.local/node_modules/.bin/dotenvx set OPENROUTER_API_KEY "$openrouter_key"
+        "$HOME/.local/node_modules/.bin/dotenvx" set OPENROUTER_API_KEY "$openrouter_key"
         echo "✅ Updated OPENROUTER_API_KEY"
       fi
       
       if [ -n "$claude_token" ]; then
-        ~/.local/node_modules/.bin/dotenvx set CLAUDE_CODE_OAUTH_TOKEN "$claude_token"
+        "$HOME/.local/node_modules/.bin/dotenvx" set CLAUDE_CODE_OAUTH_TOKEN "$claude_token"
         echo "✅ Updated CLAUDE_CODE_OAUTH_TOKEN"
       fi
       
@@ -141,19 +152,16 @@ EOF
         echo "✅ Created .env file"
       fi
       
-      # Install dotenvx locally (nixpkgs version is broken)
-      if ! command -v dotenvx >/dev/null 2>&1; then
-        echo "Installing dotenvx to ~/.local/bin..."
-        # npm --prefix installs to prefix/node_modules/.bin/
+      # Install dotenvx locally if not found
+      if ! command -v dotenvx >/dev/null 2>&1 && [ ! -x "$HOME/.local/node_modules/.bin/dotenvx" ]; then
+        echo "Installing dotenvx to ~/.local..."
         npm install --prefix ~/.local @dotenvx/dotenvx
-        # Ensure it's in PATH
-        export PATH="$HOME/.local/node_modules/.bin:$HOME/.local/bin:$PATH"
       fi
       
       # Encrypt .env if not already encrypted
       if [ ! -f .env.keys ]; then
         echo "Encrypting .env file..."
-        ~/.local/node_modules/.bin/dotenvx encrypt || dotenvx encrypt
+        "$HOME/.local/node_modules/.bin/dotenvx" encrypt
         echo "⚠️  IMPORTANT: Keep .env.keys safe! It's your decryption key."
       fi
       

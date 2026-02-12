@@ -6,6 +6,7 @@
     ./modules/home/shell.nix
     ./modules/home/git.nix
     ./modules/home/devenv.nix
+    ./modules/home/claude-devcontainer.nix
   ];
 
   programs.home-manager.enable = true;
@@ -15,6 +16,7 @@
   home.stateVersion = "25.11";
   home.sessionPath = [
     "$HOME/.local/bin"
+    "$HOME/.local/node_modules/.bin"  # npm install --prefix ~/.local (e.g. dotenvx)
     "/etc/nixos/scripts"  # For custom scripts like cursor-safe
   ];
 
