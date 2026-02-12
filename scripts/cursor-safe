@@ -55,6 +55,7 @@ exec firejail \
     --read-write=~/.cursor \
     --read-write=~/.config/Cursor \
     --read-write=~/.cache/Cursor \
+    --read-write=~/.cache/uv \
     --caps.drop=all \
     --nonewprivs \
     --noroot \
