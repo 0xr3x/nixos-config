@@ -40,7 +40,11 @@ exec firejail \
     --read-only=/nix/store \
     --read-only="$HOME" \
     --private-tmp \
-    --blacklist=~/.ssh \
+    --read-only=~/.ssh/known_hosts \
+    --read-only=~/.ssh/config \
+    --blacklist=~/.ssh/id_rsa \
+    --blacklist=~/.ssh/id_ed25519 \
+    --blacklist=~/.ssh/id_ecdsa \
     --blacklist=~/.aws \
     --blacklist=~/.gnupg \
     --blacklist=~/.password-store \
