@@ -29,6 +29,9 @@
       
       # Wireless mouse dongle
       allow id 32c2:0018 # 2.4G Wireless Receiver
+      
+      # Gaming Keyboard
+      allow id 2442:0001 # Gaming Keyboard
     '';
   };
 
@@ -54,6 +57,15 @@
     '';
     mode = "0755";
   };
+
+  # Disable core dumps (can leak sensitive memory contents)
+  systemd.coredump.enable = false;
+  security.pam.loginLimits = [{
+    domain = "*";
+    type = "hard";
+    item = "core";
+    value = "0";
+  }];
 
   # Firejail for WPS Office (no network access)
   programs.firejail.enable = true;
