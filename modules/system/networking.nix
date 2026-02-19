@@ -30,6 +30,7 @@
 
   # IPv6 privacy extensions (temporary addresses)
   networking.networkmanager.connectionConfig."ipv6.ip6-privacy" = 2;
+  boot.kernel.sysctl."net.ipv6.conf.all.use_tempaddr" = 2;
 
   # Time zone
   time.timeZone = "Europe/London";
