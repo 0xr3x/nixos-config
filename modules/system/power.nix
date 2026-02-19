@@ -50,15 +50,13 @@
   powerManagement.powertop.enable = true;
 
   # Laptop lid actions
-  services.logind = {
-    lidSwitch = "suspend";
-    lidSwitchExternalPower = "lock";
-    settings = {
-      Login = {
-        HandlePowerKey = "suspend";
-        IdleAction = "suspend";
-        IdleActionSec = "30min";
-      };
+  services.logind.settings = {
+    Login = {
+      HandleLidSwitch = "suspend";
+      HandleLidSwitchExternalPower = "lock";
+      HandlePowerKey = "suspend";
+      IdleAction = "suspend";
+      IdleActionSec = "30min";
     };
   };
 }

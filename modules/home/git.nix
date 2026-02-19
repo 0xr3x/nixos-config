@@ -41,7 +41,7 @@
       signByDefault = true;
     };
 
-    aliases = {
+    settings.alias = {
       co = "checkout";
       br = "branch";
       st = "status -sb";

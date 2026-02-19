@@ -12,10 +12,10 @@
   # DNS settings for surfshark-vpn
   services.resolved = {
     enable = true;
-    dnssec = "true";
-    dnsovertls = "opportunistic";
     settings = {
       Resolve = {
+        DNSSEC = "true";
+        DNSOverTLS = "opportunistic";
         DNS = [ "1.1.1.1#cloudflare-dns.com" "8.8.8.8#dns.google" ];
         FallbackDNS = [ "9.9.9.9#dns.quad9.net" ];
       };
