@@ -58,6 +58,9 @@
     mode = "0755";
   };
 
+  # Stricter default umask: new files are owner-only (rwx------)
+  environment.etc."profile.d/umask.sh".text = "umask 077";
+
   # Disable core dumps (can leak sensitive memory contents)
   systemd.coredump.enable = false;
   security.pam.loginLimits = [{
