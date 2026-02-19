@@ -1,12 +1,13 @@
 { config, pkgs, ... }:
 
 {
-  # Firewall
+  # Firewall (deny-by-default)
   networking.firewall = {
     enable = true;
-    # Only allow what you need
     allowedTCPPorts = [ ];
     allowedUDPPorts = [ ];
+    logReversePathDrops = true;
+    logRefusedConnections = true;
   };
 
   # USBGuard - protect against malicious USB devices
