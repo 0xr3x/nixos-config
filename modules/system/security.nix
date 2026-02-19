@@ -59,6 +59,9 @@
     mode = "0755";
   };
 
+  # Stricter default umask at PAM level (applies to all sessions including non-interactive)
+  security.loginDefs.settings.UMASK = "077";
+
   # ARP spoofing protection
   boot.kernel.sysctl."net.ipv4.conf.all.arp_announce" = 2;
   boot.kernel.sysctl."net.ipv4.conf.all.arp_ignore" = 1;
