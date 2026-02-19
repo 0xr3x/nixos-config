@@ -24,6 +24,13 @@
   networking.resolvconf.enable = false;
   networking.networkmanager.dns = "systemd-resolved";
 
+  # WiFi MAC randomization for privacy
+  networking.networkmanager.wifi.macAddress = "random";
+  networking.networkmanager.wifi.scanRandMacAddress = true;
+
+  # IPv6 privacy extensions (temporary addresses)
+  networking.networkmanager.connectionConfig."ipv6.ip6-privacy" = 2;
+
   # Time zone
   time.timeZone = "Europe/London";
 
