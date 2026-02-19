@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  networking.hostName = "rex-nixos";
+  networking.hostName = "thinkpad";
 
   # Enable networking
   networking.networkmanager.enable = true;

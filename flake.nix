@@ -13,7 +13,7 @@
   };
 
   outputs = { self, nixpkgs, home-manager, zen-browser, ... }@inputs: {
-    nixosConfigurations.rex-nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.thinkpad = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
 
       modules = [

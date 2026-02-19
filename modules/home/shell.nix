@@ -10,6 +10,7 @@
   # Bash configuration
   programs.bash = {
     enable = true;
+    initExtra = "umask 077";
     shellAliases = {
       ll = "ls -lah";
       ls = "eza";

@@ -59,8 +59,15 @@
     mode = "0755";
   };
 
-  # Stricter default umask: new files are owner-only (rwx------)
-  environment.shellInit = "umask 077";
+  # ARP spoofing protection
+  boot.kernel.sysctl."net.ipv4.conf.all.arp_announce" = 2;
+  boot.kernel.sysctl."net.ipv4.conf.all.arp_ignore" = 1;
+
+  # Suppress OS info in login banner
+  services.getty.greetingLine = "";
+  environment.etc.issue.text = "";
+
+  # Disable core dumps (can leak sensitive memory contents)
 
   # Disable core dumps (can leak sensitive memory contents)
   systemd.coredump.enable = false;
