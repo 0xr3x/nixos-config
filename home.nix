@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, pkgs-stable, inputs, ... }:
 
 {
   imports = [
@@ -7,6 +7,7 @@
     ./modules/home/git.nix
     ./modules/home/devenv.nix
     ./modules/home/claude-devcontainer.nix
+    ./modules/home/brave.nix
   ];
 
   programs.home-manager.enable = true;
@@ -72,6 +73,7 @@
     discord
     slack
     telegram-desktop
+    localsend
 
     # Media
     spotube
@@ -81,7 +83,7 @@
 
     # Hardware wallets
     trezor-suite
-    trezorctl
+    pkgs-stable.trezorctl
 
     # KDE apps
     kdePackages.kate
@@ -96,7 +98,8 @@
     gh          # GitHub CLI
     lazygit     # TUI for git
     docker-compose
-    vscode      # Sandboxed via firejail for remote development only
+    openssl
+    zed-editor
 
     # Office
     wpsoffice
