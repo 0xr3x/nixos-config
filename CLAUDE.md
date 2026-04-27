@@ -1,0 +1,55 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## What This Is
+
+Personal NixOS configuration for a ThinkPad (x86_64-linux). Flake-based with home-manager. Security-hardened with container-first development workflow.
+
+## Key Commands
+
+```bash
+# Build and apply (on the actual machine, not in dev containers)
+sudo nixos-rebuild switch --flake /etc/nixos#thinkpad
+
+# Using the nh helper alias (preferred)
+rebuild          # nh os switch
+update           # nh os switch --update
+cleanup          # nh clean all --keep 5
+
+# Sync between repo copy and /etc/nixos
+./apply-to-system.sh   # ~/nixos-config → /etc/nixos (rsync, excludes hardware-configuration.nix)
+./sync-from-system.sh  # /etc/nixos → ~/nixos-config
+```
+
+There are no tests or linters configured for this repo. Validation happens at `nixos-rebuild switch` time.
+
+## Architecture
+
+**Flake entry point**: `flake.nix` defines a single NixOS configuration (`thinkpad`) using nixpkgs-unstable + home-manager. Inputs include a stable nixpkgs pin (for packages needing older versions like trezorctl) and a custom zen-browser flake.
+
+**Two-layer module split**:
+- `modules/system/*.nix` — NixOS system-level config (imported by `configuration.nix`)
+- `modules/home/*.nix` — Home Manager user-level config (imported by `home.nix`)
+
+This separation matters: system modules use `{ config, pkgs, ... }` and configure services/boot/networking. Home modules configure user programs and dotfiles.
+
+**Security model** (central design concern):
+- Firewall deny-by-default, USBGuard blocks unknown USB devices (`security.nix`)
+- Cursor IDE is wrapped in firejail via `scripts/cursor-safe` — only the target project directory is accessible. Desktop entry overridden in `home.nix` to use `cursor-safe-gui`
+- WPS Office firejailed with no network (`security.nix`)
+- Podman with rootless containers, docker-compat (`virtualisation.nix`)
+- 1Password SSH agent (no raw SSH keys on disk), commit signing via `op-ssh-sign` (`git.nix`)
+- Strict umask 077 at both PAM and shell level (`security.nix`)
+- DNS-over-TLS, WiFi MAC randomization, IPv6 privacy extensions (`networking.nix`)
+
+**Development environments**: Two container approaches coexist:
+- `devenv` (in `modules/home/devenv.nix`) — wraps a Makefile-based tool from an external `dev-env` repo. Per-project containers with opt-in port exposure
+- `devc` (in `modules/home/claude-devcontainer.nix`) — wraps Trail of Bits' claude-code-devcontainer
+
+## Conventions
+
+- Commit messages use conventional format: `feat:`, `fix:`, `security:`, `refactor:`, `power:`, `chore:`
+- `hardware-configuration.nix` is machine-generated and excluded from git (see `.gitignore`)
+- Shell aliases redefine common tools: `ls`→`eza`, `cat`→`bat`, `grep`→`rg`, `find`→`fd`, `cd`→`z` (zoxide)
+- The flake hostname is `thinkpad`; the system user is `rex`
