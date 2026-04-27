@@ -40,6 +40,30 @@
     };
   };
 
+  # Hardware video acceleration (Intel)
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      intel-vaapi-driver
+      libvdpau-va-gl
+    ];
+  };
+
+  # Proprietary codecs and media libraries
+  environment.systemPackages = with pkgs; [
+    ffmpeg-full
+    gst_all_1.gstreamer
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav
+    x265
+    libde265
+    libheif
+  ];
+
   # Bluetooth
   hardware.bluetooth = {
     enable = true;
@@ -53,6 +77,7 @@
   # Trezor uses an unsafe encryption library
   nixpkgs.config.permittedInsecurePackages = [
     "python3.13-ecdsa-0.19.1"
+    "python3.12-ecdsa-0.19.1"
   ];
 
   # Firmware updates
