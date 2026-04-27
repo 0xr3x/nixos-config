@@ -4,8 +4,8 @@
   # Firewall (deny-by-default)
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ ];
-    allowedUDPPorts = [ ];
+    allowedTCPPorts = [ 53317 ];
+    allowedUDPPorts = [ 53317 ];
     logReversePathDrops = true;
     logRefusedConnections = true;
   };
@@ -33,6 +33,11 @@
       
       # Gaming Keyboard
       allow id 2442:0001 # Gaming Keyboard
+      
+      # Hardware wallets
+      allow id 2c97:* # Ledger (Nano S/X/S+, Stax, Flex)
+      allow id 534c:0001 # Trezor One
+      allow id 1209:53c1 # Trezor Model T / Safe
     '';
   };
 
@@ -59,8 +64,9 @@
     mode = "0755";
   };
 
-  # Stricter default umask at PAM level (applies to all sessions including non-interactive)
+  # Stricter default umask: PAM level + shell fallback for non-PAM shells (e.g. curl|bash)
   security.loginDefs.settings.UMASK = "077";
+  environment.shellInit = "umask 077";
 
   # ARP spoofing protection
   boot.kernel.sysctl."net.ipv4.conf.all.arp_announce" = 2;
@@ -69,8 +75,6 @@
   # Suppress OS info in login banner
   services.getty.greetingLine = "";
   environment.etc.issue.text = "";
-
-  # Disable core dumps (can leak sensitive memory contents)
 
   # Disable core dumps (can leak sensitive memory contents)
   systemd.coredump.enable = false;
@@ -89,46 +93,6 @@
     private
     seccomp
     caps.drop all
-  '';
-
-  # Firejail profile for VS Code (REMOTE ONLY - no local files)
-  environment.etc."firejail/vscode.profile".text = ''
-    # Network access (needed for remote development)
-    
-    # Minimal filesystem - config only
-    whitelist ''${HOME}/.vscode
-    whitelist ''${HOME}/.config/Code
-    whitelist ''${HOME}/.ssh/config
-    whitelist /tmp
-    
-    # Block EVERYTHING else
-    blacklist ''${HOME}/Documents
-    blacklist ''${HOME}/Downloads  
-    blacklist ''${HOME}/Projects
-    blacklist ''${HOME}/.ssh/id_*
-    blacklist ''${HOME}/.gnupg
-    blacklist ''${HOME}/.password-store
-    blacklist ''${HOME}/.aws
-    blacklist ''${HOME}/.kube
-    blacklist ''${HOME}/.docker
-    blacklist ''${HOME}/.1password
-    
-    # System restrictions
-    seccomp
-    caps.drop all
-    nonewprivs
-    noroot
-    
-    # Disable dangerous features
-    nodvd
-    nogroups
-    noinput
-    notv
-    nou2f
-    novideo
-    
-    # Read-only SSH config (can see remotes, can't modify keys)
-    read-only ''${HOME}/.ssh/config
   '';
 
   programs.firejail.wrappedBinaries = {
@@ -151,12 +115,6 @@
     wpm = {
       executable = "${pkgs.wpsoffice}/bin/wpm";
       profile = "/etc/firejail/wps.profile";
-    };
-    
-    # VS Code (locked down for remote-only use)
-    code = {
-      executable = "${pkgs.vscode}/bin/code";
-      profile = "/etc/firejail/vscode.profile";
     };
   };
 }
