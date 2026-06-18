@@ -28,6 +28,16 @@
   # autostart 1password
   xdg.configFile."autostart/1password.desktop".source = "${pkgs._1password-gui}/share/applications/1password.desktop";
 
+  # btop ships Terminal=true; Plasma defaults to konsole, which we exclude — launch via kitty.
+  xdg.desktopEntries.btop = {
+    name = "btop++";
+    genericName = "System Monitor";
+    exec = "kitty -e btop";
+    icon = "btop";
+    terminal = false;
+    categories = [ "System" "Monitor" ];
+  };
+
   # Override Cursor desktop entry to use sandboxed version
   xdg.desktopEntries.cursor = {
     name = "Cursor";
@@ -82,8 +92,12 @@
     brave
 
     # Hardware wallets
+    ledger-live-desktop
     trezor-suite
     pkgs-stable.trezorctl
+
+    # YubiKey (CLI: ykman; GUI: ykman-gui)
+    yubikey-manager
 
     # KDE apps
     kdePackages.kate
@@ -104,8 +118,12 @@
     # Office
     wpsoffice
 
+    # CAD (Robust MCP Bridge workbench in ~/.local/share/FreeCAD/Mod/RobustMCPBridge)
+    freecad
+
     # Media
     mpv         # Best video player
+    yt-dlp      # YouTube / stream downloader
     flameshot   # Better screenshots
 
     # Torrents

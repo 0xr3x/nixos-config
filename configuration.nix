@@ -114,7 +114,7 @@
   users.users.rex = {
     isNormalUser = true;
     description = "rex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "lp" "lpadmin" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "lp" "lpadmin" "dialout" ];
     packages = with pkgs; [ ];
   };
 

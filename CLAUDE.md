@@ -18,8 +18,11 @@ update           # nh os switch --update
 cleanup          # nh clean all --keep 5
 
 # Sync between repo copy and /etc/nixos
-./apply-to-system.sh   # ~/nixos-config → /etc/nixos (rsync, excludes hardware-configuration.nix)
-./sync-from-system.sh  # /etc/nixos → ~/nixos-config
+./apply-to-system.sh   # ~/nixos-config → /etc/nixos (.nix only; excludes hardware-configuration.nix, flake.lock)
+./sync-from-system.sh  # /etc/nixos → ~/nixos-config (includes flake.lock — run after update)
+
+# After changing flake inputs in the repo:
+./apply-to-system.sh && (cd /etc/nixos && sudo nix flake lock) && rebuild && ./sync-from-system.sh
 ```
 
 There are no tests or linters configured for this repo. Validation happens at `nixos-rebuild switch` time.

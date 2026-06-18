@@ -90,7 +90,13 @@ devenv-add-key         # Add API keys (optional)
 # Convenience
 dev                    # Short for 'devenv shell'
 dev-status             # Check container status
+
+# Sync repo ↔ /etc/nixos (nh uses /etc/nixos)
+./apply-to-system.sh   # Push .nix changes; does not overwrite hardware-configuration.nix or flake.lock
+./sync-from-system.sh  # Pull from system (includes flake.lock — run after update)
 ```
+
+After changing `flake.nix` inputs: apply → `sudo nix flake lock` in `/etc/nixos` → rebuild → sync-from-system.
 
 ## Security Features
 

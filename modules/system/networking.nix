@@ -6,7 +6,8 @@ let
   resolvectl = "${config.systemd.package}/bin/resolvectl";
   btWifiDnssecDispatcher = pkgs.writeShellScript "nm-btwifi-dnssec" ''
     set -eu
-    iface="''${1:?}"
+    # connectivity-change / dns-change pass an empty $1; a non-empty iface check would exit 1 and spam NM logs.
+    iface="''${1:-}"
     action="''${2:?}"
 
     bt_domain() {
@@ -18,6 +19,9 @@ let
 
     case "$action" in
       up|dhcp4-change|dhcp6-change)
+        if [[ -z "$iface" ]]; then
+          exit 0
+        fi
         if bt_domain; then
           ${resolvectl} dnssec "$iface" no || true
         else

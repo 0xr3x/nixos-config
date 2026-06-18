@@ -34,10 +34,19 @@
       # Gaming Keyboard
       allow id 2442:0001 # Gaming Keyboard
       
+      # Xteink X4 / ESP32-C3 onboard USB serial (narrow PID — check `lsusb` if connect fails)
+      allow id 303a:1001
+
+      # USB-C external monitor (Fresco Logic FL7112 PD / billboard — `lsusb` when docked)
+      allow id 1d5c:7112
+
       # Hardware wallets
       allow id 2c97:* # Ledger (Nano S/X/S+, Stax, Flex)
       allow id 534c:0001 # Trezor One
       allow id 1209:53c1 # Trezor Model T / Safe
+
+      # YubiKey (OTP + FIDO2 + smart card); see lsusb — vendor 1050
+      allow id 1050:0407
     '';
   };
 
