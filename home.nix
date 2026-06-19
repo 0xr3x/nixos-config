@@ -85,9 +85,6 @@
     telegram-desktop
     localsend
 
-    # Media
-    spotube
-
     # Browsers
     brave
 
@@ -157,5 +154,6 @@
 
     ]) ++ [
         inputs.zen-browser.packages.${pkgs.system}.default
+        inputs.sidra.packages.${pkgs.system}.default
     ];
 }

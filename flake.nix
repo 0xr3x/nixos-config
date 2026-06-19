@@ -11,9 +11,14 @@
     };
 
     zen-browser.url = "github:0xr3x/zen-browser-flake";
+
+    sidra = {
+      url = "github:0xr3x/sidra";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, zen-browser, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, zen-browser, sidra, ... }@inputs:
   let
     pkgs-stable = import nixpkgs-stable {
       system = "x86_64-linux";

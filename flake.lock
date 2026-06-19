@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769813945,
-        "narHash": "sha256-9ABv9Lo9t6MrFjlnRnU8Zw1C6LVj2+R8PipQ/rxGLHk=",
+        "lastModified": 1781881225,
+        "narHash": "sha256-JOnx7JKUPYbYPnAV0p00B35c6jDqcATaL9hAAcwgX2c=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "475921375def3eb930e1f8883f619ff8609accb6",
+        "rev": "fea021792d4e33a2dd55f2a328a8851949d436ec",
         "type": "github"
       },
       "original": {
@@ -94,7 +94,28 @@
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
+        "sidra": "sidra",
         "zen-browser": "zen-browser"
+      }
+    },
+    "sidra": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781860611,
+        "narHash": "sha256-r4r4i9yBwNpecn81lNcW4F0ruimSCltlOojHtjGnkVc=",
+        "owner": "0xr3x",
+        "repo": "sidra",
+        "rev": "2132aa3b3a2465d99a51041300ea3e9f3720d018",
+        "type": "github"
+      },
+      "original": {
+        "owner": "0xr3x",
+        "repo": "sidra",
+        "type": "github"
       }
     },
     "zen-browser": {
