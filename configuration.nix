@@ -65,12 +65,14 @@
       Type = "oneshot";
       User = "root";
     };
-    path = [ pkgs.git pkgs.nix ];
+    # /etc/nixos is not a git repo - apply-to-system.sh excludes .git - so this
+    # only refreshes the lock in place. Run ./sync-from-system.sh to pull the
+    # updated flake.lock into ~/nixos-config, where it can be committed (signed,
+    # as a user) rather than by a root systemd unit.
+    path = [ pkgs.nix ];
     script = ''
       cd /etc/nixos
       nix flake update
-      git add flake.lock
-      git diff --cached --quiet || git commit -m "chore: auto-update flake inputs"
     '';
   };
 
