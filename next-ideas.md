@@ -1,3 +1,2 @@
-- wrapping cursor in a flatpak
 - trying out zed
 - finally making claudio work in the devenv

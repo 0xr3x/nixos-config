@@ -16,6 +16,8 @@
       ./modules/system/power.nix
     ];
 
+  nixpkgs.hostPlatform = "x86_64-linux";
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     download-buffer-size = 128 * 1024 * 1024;
@@ -112,7 +114,7 @@
   users.users.rex = {
     isNormalUser = true;
     description = "rex";
-    extraGroups = [ "networkmanager" "wheel" "docker" "lp" "lpadmin" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "lp" "lpadmin" "dialout" ];
     packages = with pkgs; [ ];
   };
 

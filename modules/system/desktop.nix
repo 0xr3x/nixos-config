@@ -53,6 +53,9 @@
   # flatpak
   services.flatpak.enable = true;
   xdg.portal.enable = true;
+  # KDE implementation for portals (file dialog, screenshare, etc.). Chromium
+  # and other Electron/Ozone apps rely on this behaving correctly on Plasma Wayland.
+  xdg.portal.extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
 
   # appimages
   programs.appimage = {

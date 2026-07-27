@@ -9,7 +9,7 @@ let
       echo "Run 'setup-claude-devcontainer' first."
       exit 1
     fi
-    exec "${repoPath}/install.sh" "$@"
+    exec ${pkgs.bash}/bin/bash "${repoPath}/install.sh" "$@"
   '';
 in
 {

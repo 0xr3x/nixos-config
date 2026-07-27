@@ -10,6 +10,7 @@
   # Bash configuration
   programs.bash = {
     enable = true;
+    initExtra = "umask 077";
     shellAliases = {
       ll = "ls -lah";
       ls = "eza";
@@ -23,12 +24,6 @@
       bat-check = "acpi -b";
       bright = "brightnessctl";
       cd = "z";  # use zoxide
-      
-      # Sandboxed Cursor (recommended)
-      cursor = "cursor-safe";
-      
-      # Unsandboxed Cursor (use with caution)
-      cursor-unsafe = "code-cursor-fhs";
     };
   };
 

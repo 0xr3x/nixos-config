@@ -203,7 +203,7 @@ devenv rebuild-clean
 |---------|-------------|---------|
 | **Setup** | Simple script | Declarative NixOS module |
 | **Tools** | Basic (git, node, python) | Comprehensive dev stack |
-| **Maintenance** | Manual | Managed by wonderland team |
+| **Maintenance** | Manual | Self-maintained |
 | **Security** | High isolation | High + SSH agent forwarding |
 | **Per-project** | Yes | Yes + multi-container mgmt |
 | **Claude integration** | No | Yes (hooks, context) |

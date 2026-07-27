@@ -32,14 +32,9 @@ modules/
     ├── git.nix            # Git config
     └── devenv.nix         # dev-env integration
 
-scripts/
-├── cursor-safe            # Launch Cursor sandboxed to directory
-└── cursor-safe-gui        # GUI wrapper for KDE launcher
-
 docs/
 ├── WORKFLOWS.md           # Complete development workflows
-├── dev-env-setup.md       # dev-env setup guide
-└── cursor-sandboxing.md   # Cursor security documentation
+└── dev-env-setup.md       # dev-env setup guide
 ```
 
 ## Quick Start
@@ -62,10 +57,7 @@ sudo nixos-rebuild switch --flake /etc/nixos#rex-nixos
 See [WORKFLOWS.md](WORKFLOWS.md) for detailed guide.
 
 **Quick summary:**
-- **IDE**: Click "Cursor" in KDE → select project → sandboxed automatically
 - **Development**: Use `devenv shell` for full dev environment per project
-- **Terminal**: `cursor ~/Documents/project` for sandboxed Cursor
-- **Emergency**: `cursor-unsafe` for full filesystem access
 
 ## Key Commands
 
@@ -90,19 +82,24 @@ devenv-add-key         # Add API keys (optional)
 # Convenience
 dev                    # Short for 'devenv shell'
 dev-status             # Check container status
+
+# Sync repo ↔ /etc/nixos (nh uses /etc/nixos)
+./apply-to-system.sh   # Push .nix changes; does not overwrite hardware-configuration.nix or flake.lock
+./sync-from-system.sh  # Pull from system (includes flake.lock — run after update)
 ```
+
+After changing `flake.nix` inputs: apply → `sudo nix flake lock` in `/etc/nixos` → rebuild → sync-from-system.
 
 ## Security Features
 
 ✅ LUKS full disk encryption  
 ✅ USBGuard (USB device whitelist)  
-✅ Firejail sandboxing (Cursor, WPS Office)  
+✅ Firejail sandboxing (WPS Office)  
 ✅ Container-first development (dev-env)  
 ✅ Per-project isolated containers  
 ✅ SSH agent forwarding (keys never in containers)  
 ✅ Firewall (deny all by default)  
 ✅ 1Password integration  
-✅ Cursor sandboxed to project directory only  
 ✅ Opt-in port exposure (nothing exposed by default)  
 
 ## Automation
@@ -114,7 +111,6 @@ dev-status             # Check container status
 ## Notes
 
 - **WPS Office**: Sandboxed, no network access
-- **Cursor**: Sandboxed to project directory (KDE launcher prompts for directory)
 - **dev-env**: Full dev stack per project (Node, Rust, Python, Foundry, Neo4j, Claude Code)
 - **VS Code**: Remote-only (connects to containers/SSH)
 - **Battery**: 50% CPU limit on battery power

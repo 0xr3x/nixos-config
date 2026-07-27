@@ -6,30 +6,12 @@ Security-first development setup with containerized environments.
 
 | Tool | Access | Use Case |
 |------|--------|----------|
-| **cursor** (sandboxed) | Project dir only | All development (default) |
-| **cursor-unsafe** | Full filesystem | Emergency only |
 | **devenv** | Isolated container | Full dev environment per project |
 | **code** (VS Code) | Remote-only | Connect to containers/SSH |
 
 ---
 
 ## Working on Projects
-
-### Using Cursor (KDE Launcher)
-
-Click "Cursor" in your application menu:
-1. Directory picker dialog appears
-2. Select your project directory
-3. Cursor opens with **only that directory accessible**
-
-```bash
-# From terminal
-cursor ~/Documents/my-project
-
-# Cursor can now ONLY access:
-# ✅ ~/Documents/my-project and subdirectories
-# ❌ Parent directories, ~/.ssh, other projects
-```
 
 ### Using dev-env (Recommended for Projects)
 
@@ -68,7 +50,7 @@ devenv shell --neo4j
 setup-devenv
 
 # This will:
-# - Clone dev-env repo to ~/Documents/wonderland/dev-env
+# - Clone dev-env repo to ~/dev-env
 # - Check prerequisites (docker, npm, gh)
 # - Create and encrypt .env file
 # - Install dotenvx globally
@@ -192,28 +174,16 @@ cd ~/projects/my-app
 devenv shell --3000        # Full dev environment
 ```
 
-**For IDE work:**
-```bash
-cursor ~/Documents/project # Sandboxed Cursor
-```
-
 **For untrusted code review:**
 ```bash
 cd ~/Documents/review
 devenv shell --bg          # Container without network ports
-cursor .                   # Sandboxed IDE
-```
-
-**Emergency full access (avoid):**
-```bash
-cursor-unsafe              # No sandbox - use with caution
 ```
 
 ---
 
 ## Security Model
 
-✅ **Cursor**: Sandboxed to project directory (via firejail)
 ✅ **dev-env**: Full container isolation per project
 ✅ **VS Code**: Remote-only - can't access local files
 ✅ **SSH Agent**: Forwarded (keys never in container)
@@ -238,14 +208,7 @@ cursor-unsafe              # No sandbox - use with caution
 3. **SSH agent forwarding** - Keys never enter container
 4. **Per-project isolation** - Each project gets own container
 5. **Port management** - Opt-in exposure, conflict detection
-6. **Maintained externally** - Wonderland team handles updates
-
-### Cursor Sandboxing
-
-1. **Directory-level isolation** - Only access project folder
-2. **GUI integration** - Directory picker on launch
-3. **Firejail enforcement** - Kernel-level restrictions
-4. **Network allowed** - AI features work normally
+6. **Self-maintained** - your own fork, update on your schedule
 
 ---
 
@@ -267,18 +230,6 @@ devenv shell --takeover          # Take ports from it
 devenv rebuild-clean             # Wipe everything, start fresh
 ```
 
-### Cursor Issues
-
-```bash
-# Directory not accessible
-# Solution: Open Cursor with broader directory scope
-cursor ~/Documents/whole-workspace
-
-# GUI picker doesn't appear
-command -v kdialog               # Check if kdialog is available
-# Falls back to ~/Documents if missing
-```
-
 ### General Cleanup
 
 ```bash
@@ -294,5 +245,4 @@ docker system prune -a --volumes
 ## Documentation
 
 - **dev-env setup**: `docs/dev-env-setup.md`
-- **Cursor sandboxing**: `docs/cursor-sandboxing.md`
 - **System config**: `/home/rex/nixos-config/`

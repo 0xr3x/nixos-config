@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, pkgs-stable, inputs, ... }:
 
 {
   imports = [
@@ -7,6 +7,7 @@
     ./modules/home/git.nix
     ./modules/home/devenv.nix
     ./modules/home/claude-devcontainer.nix
+    ./modules/home/brave.nix
   ];
 
   programs.home-manager.enable = true;
@@ -17,7 +18,7 @@
   home.sessionPath = [
     "$HOME/.local/bin"
     "$HOME/.local/node_modules/.bin"  # npm install --prefix ~/.local (e.g. dotenvx)
-    "/etc/nixos/scripts"  # For custom scripts like cursor-safe
+    "/etc/nixos/scripts"
   ];
 
   home.sessionVariables = {
@@ -27,44 +28,14 @@
   # autostart 1password
   xdg.configFile."autostart/1password.desktop".source = "${pkgs._1password-gui}/share/applications/1password.desktop";
 
-  # Override Cursor desktop entry to use sandboxed version
-  xdg.desktopEntries.cursor = {
-    name = "Cursor";
-    genericName = "Text Editor";
-    comment = "Code Editing. Redefined. (Sandboxed)";
-    exec = "cursor-safe-gui %F";
-    icon = "cursor";
+  # btop ships Terminal=true; Plasma defaults to konsole, which we exclude — launch via kitty.
+  xdg.desktopEntries.btop = {
+    name = "btop++";
+    genericName = "System Monitor";
+    exec = "kitty -e btop";
+    icon = "btop";
     terminal = false;
-    type = "Application";
-    categories = [ "Utility" "TextEditor" "Development" "IDE" ];
-    mimeType = [
-      "text/plain"
-      "text/x-chdr"
-      "text/x-csrc"
-      "text/x-c++hdr"
-      "text/x-c++src"
-      "text/x-java"
-      "text/x-dsrc"
-      "text/x-pascal"
-      "text/x-perl"
-      "text/x-python"
-      "application/x-php"
-      "application/x-httpd-php3"
-      "application/x-httpd-php4"
-      "application/x-httpd-php5"
-      "application/xml"
-      "text/html"
-      "text/css"
-      "text/x-sql"
-      "text/x-diff"
-    ];
-    startupNotify = true;
-    actions = {
-      new-empty-window = {
-        name = "New Empty Window";
-        exec = "cursor-safe-gui";
-      };
-    };
+    categories = [ "System" "Monitor" ];
   };
 
   home.packages = (with pkgs; [
@@ -72,23 +43,24 @@
     discord
     slack
     telegram-desktop
-
-    # Media
-    spotube
+    localsend
 
     # Browsers
     brave
 
     # Hardware wallets
+    ledger-live-desktop
     trezor-suite
-    trezorctl
+    pkgs-stable.trezorctl
+
+    # YubiKey (CLI: ykman; GUI: ykman-gui)
+    yubikey-manager
 
     # KDE apps
     kdePackages.kate
-    kdePackages.kdialog  # For cursor-safe-gui directory picker
+    kdePackages.kdialog
 
     # Development tools
-    code-cursor-fhs
     nodejs_22
     pnpm
     uv
@@ -96,13 +68,21 @@
     gh          # GitHub CLI
     lazygit     # TUI for git
     docker-compose
-    vscode      # Sandboxed via firejail for remote development only
+    openssl
+    zed-editor
+    nil         # Nix language server; Zed's Nix extension expects it on PATH
+    claude-code # AI coding assistant; tracks nixpkgs, no manual version pin
 
     # Office
     wpsoffice
 
+    # CAD (Robust MCP Bridge workbench in ~/.local/share/FreeCAD/Mod/RobustMCPBridge)
+    # pkgs-stable: unstable's binary cache is unreliable for this one, pin to 25.05 to avoid local builds
+    pkgs-stable.freecad
+
     # Media
     mpv         # Best video player
+    yt-dlp      # YouTube / stream downloader
     flameshot   # Better screenshots
 
     # Torrents
@@ -120,7 +100,7 @@
     procs       # Better ps
     
     # Sandboxing
-    bubblewrap  # Better sandboxing for Cursor
+    bubblewrap
 
     # CLI utilities
     ripgrep
@@ -136,5 +116,6 @@
 
     ]) ++ [
         inputs.zen-browser.packages.${pkgs.system}.default
+        inputs.sidra.packages.${pkgs.system}.default
     ];
 }

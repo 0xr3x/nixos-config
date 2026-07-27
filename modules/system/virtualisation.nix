@@ -21,4 +21,7 @@
     subUidRanges = [{ startUid = 100000; count = 65536; }];
     subGidRanges = [{ startGid = 100000; count = 65536; }];
   };
+
+  # Run unpatched dynamically-linked binaries (e.g. devcontainer tooling, npm/pip installed binaries)
+  programs.nix-ld.enable = true;
 }

@@ -1,12 +1,13 @@
 { config, pkgs, ... }:
 
 {
-  # Firewall
+  # Firewall (deny-by-default)
   networking.firewall = {
     enable = true;
-    # Only allow what you need
-    allowedTCPPorts = [ ];
-    allowedUDPPorts = [ ];
+    allowedTCPPorts = [ 53317 ];
+    allowedUDPPorts = [ 53317 ];
+    logReversePathDrops = true;
+    logRefusedConnections = true;
   };
 
   # USBGuard - protect against malicious USB devices
@@ -29,6 +30,23 @@
       
       # Wireless mouse dongle
       allow id 32c2:0018 # 2.4G Wireless Receiver
+      
+      # Gaming Keyboard
+      allow id 2442:0001 # Gaming Keyboard
+      
+      # Xteink X4 / ESP32-C3 onboard USB serial (narrow PID — check `lsusb` if connect fails)
+      allow id 303a:1001
+
+      # USB-C external monitor (Fresco Logic FL7112 PD / billboard — `lsusb` when docked)
+      allow id 1d5c:7112
+
+      # Hardware wallets
+      allow id 2c97:* # Ledger (Nano S/X/S+, Stax, Flex)
+      allow id 534c:0001 # Trezor One
+      allow id 1209:53c1 # Trezor Model T / Safe
+
+      # YubiKey (OTP + FIDO2 + smart card); see lsusb — vendor 1050
+      allow id 1050:0407
     '';
   };
 
@@ -55,6 +73,27 @@
     mode = "0755";
   };
 
+  # Stricter default umask: PAM level + shell fallback for non-PAM shells (e.g. curl|bash)
+  security.loginDefs.settings.UMASK = "077";
+  environment.shellInit = "umask 077";
+
+  # ARP spoofing protection
+  boot.kernel.sysctl."net.ipv4.conf.all.arp_announce" = 2;
+  boot.kernel.sysctl."net.ipv4.conf.all.arp_ignore" = 1;
+
+  # Suppress OS info in login banner
+  services.getty.greetingLine = "";
+  environment.etc.issue.text = "";
+
+  # Disable core dumps (can leak sensitive memory contents)
+  systemd.coredump.enable = false;
+  security.pam.loginLimits = [{
+    domain = "*";
+    type = "hard";
+    item = "core";
+    value = "0";
+  }];
+
   # Firejail for WPS Office (no network access)
   programs.firejail.enable = true;
 
@@ -63,46 +102,6 @@
     private
     seccomp
     caps.drop all
-  '';
-
-  # Firejail profile for VS Code (REMOTE ONLY - no local files)
-  environment.etc."firejail/vscode.profile".text = ''
-    # Network access (needed for remote development)
-    
-    # Minimal filesystem - config only
-    whitelist ''${HOME}/.vscode
-    whitelist ''${HOME}/.config/Code
-    whitelist ''${HOME}/.ssh/config
-    whitelist /tmp
-    
-    # Block EVERYTHING else
-    blacklist ''${HOME}/Documents
-    blacklist ''${HOME}/Downloads  
-    blacklist ''${HOME}/Projects
-    blacklist ''${HOME}/.ssh/id_*
-    blacklist ''${HOME}/.gnupg
-    blacklist ''${HOME}/.password-store
-    blacklist ''${HOME}/.aws
-    blacklist ''${HOME}/.kube
-    blacklist ''${HOME}/.docker
-    blacklist ''${HOME}/.1password
-    
-    # System restrictions
-    seccomp
-    caps.drop all
-    nonewprivs
-    noroot
-    
-    # Disable dangerous features
-    nodvd
-    nogroups
-    noinput
-    notv
-    nou2f
-    novideo
-    
-    # Read-only SSH config (can see remotes, can't modify keys)
-    read-only ''${HOME}/.ssh/config
   '';
 
   programs.firejail.wrappedBinaries = {
@@ -125,12 +124,6 @@
     wpm = {
       executable = "${pkgs.wpsoffice}/bin/wpm";
       profile = "/etc/firejail/wps.profile";
-    };
-    
-    # VS Code (locked down for remote-only use)
-    code = {
-      executable = "${pkgs.vscode}/bin/code";
-      profile = "/etc/firejail/vscode.profile";
     };
   };
 }
