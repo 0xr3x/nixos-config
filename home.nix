@@ -111,6 +111,7 @@
     docker-compose
     openssl
     zed-editor
+    claude-code # AI coding assistant; tracks nixpkgs, no manual version pin
 
     # Office
     wpsoffice
