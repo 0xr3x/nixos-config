@@ -117,7 +117,8 @@
     wpsoffice
 
     # CAD (Robust MCP Bridge workbench in ~/.local/share/FreeCAD/Mod/RobustMCPBridge)
-    freecad
+    # pkgs-stable: unstable's binary cache is unreliable for this one, pin to 25.05 to avoid local builds
+    pkgs-stable.freecad
 
     # Media
     mpv         # Best video player
