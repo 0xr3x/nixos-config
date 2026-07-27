@@ -70,6 +70,7 @@
     docker-compose
     openssl
     zed-editor
+    nil         # Nix language server; Zed's Nix extension expects it on PATH
     claude-code # AI coding assistant; tracks nixpkgs, no manual version pin
 
     # Office
