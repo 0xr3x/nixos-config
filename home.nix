@@ -18,7 +18,7 @@
   home.sessionPath = [
     "$HOME/.local/bin"
     "$HOME/.local/node_modules/.bin"  # npm install --prefix ~/.local (e.g. dotenvx)
-    "/etc/nixos/scripts"  # For custom scripts like cursor-safe
+    "/etc/nixos/scripts"
   ];
 
   home.sessionVariables = {
@@ -36,46 +36,6 @@
     icon = "btop";
     terminal = false;
     categories = [ "System" "Monitor" ];
-  };
-
-  # Override Cursor desktop entry to use sandboxed version
-  xdg.desktopEntries.cursor = {
-    name = "Cursor";
-    genericName = "Text Editor";
-    comment = "Code Editing. Redefined. (Sandboxed)";
-    exec = "cursor-safe-gui %F";
-    icon = "cursor";
-    terminal = false;
-    type = "Application";
-    categories = [ "Utility" "TextEditor" "Development" "IDE" ];
-    mimeType = [
-      "text/plain"
-      "text/x-chdr"
-      "text/x-csrc"
-      "text/x-c++hdr"
-      "text/x-c++src"
-      "text/x-java"
-      "text/x-dsrc"
-      "text/x-pascal"
-      "text/x-perl"
-      "text/x-python"
-      "application/x-php"
-      "application/x-httpd-php3"
-      "application/x-httpd-php4"
-      "application/x-httpd-php5"
-      "application/xml"
-      "text/html"
-      "text/css"
-      "text/x-sql"
-      "text/x-diff"
-    ];
-    startupNotify = true;
-    actions = {
-      new-empty-window = {
-        name = "New Empty Window";
-        exec = "cursor-safe-gui";
-      };
-    };
   };
 
   home.packages = (with pkgs; [
@@ -98,10 +58,9 @@
 
     # KDE apps
     kdePackages.kate
-    kdePackages.kdialog  # For cursor-safe-gui directory picker
+    kdePackages.kdialog
 
     # Development tools
-    code-cursor-fhs
     nodejs_22
     pnpm
     uv
@@ -140,7 +99,7 @@
     procs       # Better ps
     
     # Sandboxing
-    bubblewrap  # Better sandboxing for Cursor
+    bubblewrap
 
     # CLI utilities
     ripgrep

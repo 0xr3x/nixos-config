@@ -39,7 +39,6 @@ This separation matters: system modules use `{ config, pkgs, ... }` and configur
 
 **Security model** (central design concern):
 - Firewall deny-by-default, USBGuard blocks unknown USB devices (`security.nix`)
-- Cursor IDE is wrapped in firejail via `scripts/cursor-safe` — only the target project directory is accessible. Desktop entry overridden in `home.nix` to use `cursor-safe-gui`
 - WPS Office firejailed with no network (`security.nix`)
 - Podman with rootless containers, docker-compat (`virtualisation.nix`)
 - 1Password SSH agent (no raw SSH keys on disk), commit signing via `op-ssh-sign` (`git.nix`)
