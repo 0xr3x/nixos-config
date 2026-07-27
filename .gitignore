@@ -12,3 +12,6 @@ result-*
 
 # Nix build outputs
 .direnv/
+
+# Claude Code: shared project config is committed, personal overrides are not
+.claude/settings.local.json

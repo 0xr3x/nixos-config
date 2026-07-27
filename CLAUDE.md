@@ -56,3 +56,37 @@ This separation matters: system modules use `{ config, pkgs, ... }` and configur
 - `hardware-configuration.nix` is machine-generated and excluded from git (see `.gitignore`)
 - Shell aliases redefine common tools: `ls`→`eza`, `cat`→`bat`, `grep`→`rg`, `find`→`fd`, `cd`→`z` (zoxide)
 - The flake hostname is `thinkpad`; the system user is `rex`
+
+## AI tooling
+
+`claude-code` is installed declaratively via `home.packages` in `home.nix` and
+tracks nixpkgs — there is no pinned version or hash to bump, and the weekly
+`flake-update` timer keeps it current. Do not install it via `curl | bash`; that
+shadows the Nix-managed binary with an unmanaged one in `~/.local/bin`.
+
+`.claude/` in this repo is committed and shared:
+
+- `.claude/settings.json` — permission allowlist for the read-only commands used
+  when working here, plus denies for credential paths (`~/.ssh`, `~/.1password`,
+  `~/.claude/.credentials.json`)
+- `.claude/commands/rebuild.md` — the `/rebuild` flow for applying this repo to
+  `/etc/nixos`
+- `.claude/settings.local.json` is gitignored, for personal overrides
+
+Note that `sudo` on this machine needs a fingerprint or password at an
+interactive terminal, so an agent cannot run `apply-to-system.sh`,
+`nix flake lock` in `/etc/nixos`, or `rebuild`. Those steps are always handed
+back to the user.
+
+### MCP
+
+No MCP servers are registered globally, deliberately. `freecad-mcp`
+(`~/.local/bin/freecad-mcp`, installed as a uv tool) connects to a **running
+FreeCAD instance**, so registering it at user scope would make it fail to start
+on every unrelated session. Register it only while doing CAD work:
+
+```bash
+freecad-mcp --check                                  # confirm FreeCAD reachable
+claude mcp add freecad -- freecad-mcp --transport stdio
+claude mcp remove freecad                            # when done
+```
