@@ -10,11 +10,11 @@ let
     # Check if dev-env repo exists
     if [ ! -d "${devEnvRepo}" ]; then
       echo "Error: dev-env repository not found at ${devEnvRepo}"
-      echo "Clone it first: git clone git@github.com:defi-wonderland/dev-env.git ${devEnvRepo}"
+      echo "Clone it first: git clone git@github.com:0xr3x/devc.git ${devEnvRepo}"
       exit 1
     fi
 
-    # Ensure SSH agent env for container forwarding (Cursor/IDE terminals may not inherit sessionVariables)
+    # Ensure SSH agent env for container forwarding (some IDE terminals may not inherit sessionVariables)
     if [ -z "$SSH_AUTH_SOCK" ] || [ ! -S "$SSH_AUTH_SOCK" ]; then
       for sock in "$HOME/.1password/agent.sock" "$HOME/.1Password/agent.sock" "$HOME/.config/1Password/agent.sock"; do
         if [ -S "$sock" ]; then
@@ -111,7 +111,7 @@ in
       if [ ! -d "$repo_path" ]; then
         echo "Cloning dev-env repository..."
         mkdir -p "$(dirname "$repo_path")"
-        git clone git@github.com:defi-wonderland/dev-env.git "$repo_path"
+        git clone git@github.com:0xr3x/devc.git "$repo_path"
       fi
       
       cd "$repo_path" || return 1

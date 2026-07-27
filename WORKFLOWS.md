@@ -50,7 +50,7 @@ devenv shell --neo4j
 setup-devenv
 
 # This will:
-# - Clone dev-env repo to ~/Documents/wonderland/dev-env
+# - Clone dev-env repo to ~/dev-env
 # - Check prerequisites (docker, npm, gh)
 # - Create and encrypt .env file
 # - Install dotenvx globally
@@ -208,7 +208,7 @@ devenv shell --bg          # Container without network ports
 3. **SSH agent forwarding** - Keys never enter container
 4. **Per-project isolation** - Each project gets own container
 5. **Port management** - Opt-in exposure, conflict detection
-6. **Maintained externally** - Wonderland team handles updates
+6. **Self-maintained** - your own fork, update on your schedule
 
 ---
 

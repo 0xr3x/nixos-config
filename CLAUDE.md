@@ -46,8 +46,8 @@ This separation matters: system modules use `{ config, pkgs, ... }` and configur
 - DNS-over-TLS, WiFi MAC randomization, IPv6 privacy extensions (`networking.nix`)
 
 **Development environments**: Two container approaches coexist:
-- `devenv` (in `modules/home/devenv.nix`) — wraps a Makefile-based tool from an external `dev-env` repo. Per-project containers with opt-in port exposure
-- `devc` (in `modules/home/claude-devcontainer.nix`) — wraps Trail of Bits' claude-code-devcontainer
+- `devenv` command (in `modules/home/devenv.nix`) — wraps a Makefile-based tool cloned from the `github:0xr3x/devc` repo (personal fork, formerly defi-wonderland/dev-env). Per-project containers with opt-in port exposure. Note: the *repo* is named `devc`, distinct from the `devc` *command* below
+- `devc` command (in `modules/home/claude-devcontainer.nix`) — wraps Trail of Bits' claude-code-devcontainer
 
 ## Conventions
 
