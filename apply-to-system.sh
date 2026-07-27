@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Apply config from ~/nixos-config to /etc/nixos
 
-sudo rsync -av \
+sudo rsync -av --delete \
   --chown=root:root \
   --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r \
   --exclude='hardware-configuration.nix' \
