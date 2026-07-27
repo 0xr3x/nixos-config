@@ -2,6 +2,8 @@
 # Apply config from ~/nixos-config to /etc/nixos
 
 sudo rsync -av \
+  --chown=root:root \
+  --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r \
   --exclude='hardware-configuration.nix' \
   --exclude='flake.lock' \
   --exclude='.git' \
