@@ -70,7 +70,9 @@
     docker-compose
     openssl
     zed-editor
-    nil         # Nix language server; Zed's Nix extension expects it on PATH
+    vscode      # VS Code, for the dbt VS Code extension's Fusion-powered IDE features
+    nil         # Nix language server
+    nixd        # Nix language server; Zed's Nix extension tries both nixd and nil on PATH
     claude-code # AI coding assistant; tracks nixpkgs, no manual version pin
 
     # dbt Fusion (CLI + LSP) — provided by the dbt-fusion overlay (flake.nix),
