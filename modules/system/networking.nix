@@ -62,8 +62,8 @@ in
         # tplinkwifi.net - and would keep doing so on every future one.
         DNSSEC = "allow-downgrade";
         DNSOverTLS = "opportunistic";
-        DNS = [ "1.1.1.1#cloudflare-dns.com" "8.8.8.8#dns.google" ];
-        FallbackDNS = [ "9.9.9.9#dns.quad9.net" ];
+        DNS = [ "9.9.9.9#dns.quad9.net" "208.67.222.222#dns.opendns.com" "1.1.1.1#cloudflare-dns.com" ];
+        FallbackDNS = [ "8.8.8.8#dns.google" ];
       };
     };
   };
