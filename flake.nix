@@ -16,9 +16,18 @@
       url = "github:0xr3x/sidra";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # dbt Fusion (Rust CLI + LSP) — not in nixpkgs; personal fork of
+    # rfaulhaber/dbt-fusion-nix, kept up to date via its own upstream nightly
+    # hash-update action. Applied as an overlay (not referenced directly) so
+    # its unfree-licensed package picks up our own allowUnfree config below.
+    dbt-fusion = {
+      url = "github:0xr3x/dbt-fusion-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, zen-browser, sidra, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, zen-browser, sidra, dbt-fusion, ... }@inputs:
   let
     pkgs-stable = import nixpkgs-stable {
       system = "x86_64-linux";
@@ -46,6 +55,7 @@
         # Global config
         {
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.overlays = [ dbt-fusion.overlays.default ];
         }
       ];
     };

@@ -73,6 +73,12 @@
     nil         # Nix language server; Zed's Nix extension expects it on PATH
     claude-code # AI coding assistant; tracks nixpkgs, no manual version pin
 
+    # dbt Fusion (CLI + LSP) — provided by the dbt-fusion overlay (flake.nix),
+    # a personal fork of rfaulhaber/dbt-fusion-nix; not a curl-installed
+    # binary, so it stays reproducible and doesn't shadow itself on $PATH
+    dbt
+    dbt-lsp
+
     # Office
     wpsoffice
 
