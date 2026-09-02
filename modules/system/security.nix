@@ -47,6 +47,12 @@
 
       # YubiKey (OTP + FIDO2 + smart card); see lsusb — vendor 1050
       allow id 1050:0407
+
+      # Kingston DataTraveler 100 G3/G4/SE9 G2/50 Kyson (USB flash drive)
+      allow id 0951:1666
+
+      # Poly Blackwire 8225 Series (USB-C headset w/ mic)
+      allow id 047f:4315
     '';
   };
 
