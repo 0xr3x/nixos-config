@@ -82,6 +82,11 @@ in
   networking.networkmanager.connectionConfig."ipv6.ip6-privacy" = 2;
   boot.kernel.sysctl."net.ipv6.conf.all.use_tempaddr" = 2;
 
+  # NetworkManager's "shared" mode (Wi-Fi hotspot) sets per-interface forwarding
+  # but not the global switch, so without this the hotspot hands out DHCP leases
+  # and DNS but never actually routes clients to the internet.
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+
   # Time zone
   time.timeZone = "Europe/London";
 
