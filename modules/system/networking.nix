@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 let
-  # Some captive portals (BT Wi‑Fi's btwifi.com, Glide student halls' glide.co.uk) hand out a
+  # Some captive portals (BT Wi-Fi's btwifi.com, Glide student halls' glide.co.uk) hand out a
   # DHCP domain but our global DNS override (1.1.1.1/8.8.8.8) bypasses the portal's own resolver,
   # so it never gets a chance to hijack queries and redirect to the sign-in page. For that link
   # only: drop the static DNS override so it falls back to the DHCP-provided (portal) resolver;
@@ -88,19 +88,15 @@ in
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
 
   # Time zone
-  time.timeZone = "America/Argentina/Buenos_Aires";
+  time.timeZone = "Europe/London";
 
   # Locale settings
   i18n.defaultLocale = "es_AR.UTF-8";
+
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "es_AR.UTF-8";
-    LC_IDENTIFICATION = "es_AR.UTF-8";
-    LC_MEASUREMENT = "es_AR.UTF-8";
-    LC_MONETARY = "es_AR.UTF-8";
-    LC_NAME = "es_AR.UTF-8";
-    LC_NUMERIC = "es_AR.UTF-8";
-    LC_PAPER = "es_AR.UTF-8";
-    LC_TELEPHONE = "es_AR.UTF-8";
-    LC_TIME = "es_AR.UTF-8";
+    LC_MONETARY = "en_GB.UTF-8";    
+    LC_TIME = "en_GB.UTF-8";
+    LC_NUMERIC = "en_GB.UTF-8";
+    LC_PAPER = "en_GB.UTF-8";
   };
 }
