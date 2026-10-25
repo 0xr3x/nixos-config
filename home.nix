@@ -68,6 +68,7 @@
     gh          # GitHub CLI
     lazygit     # TUI for git
     docker-compose
+    mongodb-compass # MongoDB GUI
     openssl
     zed-editor
     vscode      # VS Code, for the dbt VS Code extension's Fusion-powered IDE features
@@ -84,6 +85,9 @@
     # Office
     wpsoffice
 
+    # Notes
+    obsidian
+
     # CAD (Robust MCP Bridge workbench in ~/.local/share/FreeCAD/Mod/RobustMCPBridge)
     # pkgs-stable: unstable's binary cache is unreliable for this one, pin to 25.05 to avoid local builds
     pkgs-stable.freecad
@@ -91,6 +95,7 @@
     # Media
     mpv         # Best video player
     yt-dlp      # YouTube / stream downloader
+    openshot-qt # Video editor
     flameshot   # Better screenshots
 
     # Torrents
