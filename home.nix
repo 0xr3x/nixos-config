@@ -40,8 +40,6 @@
 
   home.packages = (with pkgs; [
     # Communication
-    discord
-    slack
     telegram-desktop
     localsend
 
@@ -95,7 +93,8 @@
     # Media
     mpv         # Best video player
     yt-dlp      # YouTube / stream downloader
-    openshot-qt # Video editor
+    # pkgs-stable: unstable's libopenshot fails to build against the new abseil/protobuf (absl::weak_ordering errors)
+    pkgs-stable.openshot-qt # Video editor
     flameshot   # Better screenshots
 
     # Torrents
